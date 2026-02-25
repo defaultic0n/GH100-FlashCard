@@ -3,7 +3,7 @@
 .brand{font-weight:700;letter-spacing:.2px}
 .stats{font-size:13px;color:#cbd5e1;display:flex;gap:8px;align-items:center}
 .dot{opacity:.6}
-.container{max-width:720px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.container{max-width:720px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:12px;padding-bottom:170px} /* leave space for sticky bottom controls */
 .controls,.marking,.toolbar,.search{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
 .btn{border:1px solid #243145;background:#0f172a;color:#e5e7eb;padding:10px 12px;border-radius:12px;font-weight:600;cursor:pointer;min-width:92px}
 .btn:active{transform:translateY(1px)}
@@ -25,6 +25,11 @@
 .search input{flex:1;min-width:240px;max-width:520px;border-radius:12px;border:1px solid #243145;background:#0f172a;color:#e5e7eb;padding:10px 12px;outline:none}
 .footer{display:flex;justify-content:center;padding:8px 0 2px 0}
 .small{font-size:12px;color:#94a3b8}
+
+/* Sticky bottom stack (controls above marking) */
+.bottomstack{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(17,24,39,.92);backdrop-filter:blur(8px);border-top:1px solid #1f2937;padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px}
+.bottomstack .controls{max-width:720px;margin:0 auto;width:100%}
+.bottomstack .marking{max-width:720px;margin:0 auto;width:100%}
 
 /* Quiz mode */
 .optionbtn{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;border:1px solid #243145;background:#0b1220;color:#e5e7eb;padding:10px 12px;border-radius:14px;margin:.45rem 0;cursor:pointer;}
