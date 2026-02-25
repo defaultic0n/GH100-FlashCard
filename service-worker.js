@@ -1,9 +1,9 @@
 # GH-100 Flashcards (PWA)
 
+Update: **Shuffle answers** now re-shuffles the options **every time you navigate** (Next/Prev or after marking).
+
 Includes:
 - Shuffle questions
-- **Shuffle answers** (randomizes option order per question; correct answers remain correct)
+- Shuffle answers (re-shuffle on navigation)
 - Quiz mode + Flashcard mode
 - Bottom navigation bar
-
-Deploy to GitHub Pages by placing files in repo root and enabling **Settings → Pages**.

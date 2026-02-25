@@ -14,11 +14,12 @@ const state = {
   progress: {},
   selected: new Set(),
   checked: false,
-  optionOrder: {}, // cardId -> [option objects in display order]
+  optionOrder: {},      // cardId -> option array in display order
+  lastCardId: null,
 };
 
 const STORAGE_KEY = 'gh100_flashcards_progress_v1';
-const PREF_KEY = 'gh100_flashcards_prefs_v2';
+const PREF_KEY = 'gh100_flashcards_prefs_v3';
 
 function loadProgress(){
   try{ state.progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch{ state.progress = {}; }
@@ -87,18 +88,28 @@ function fisherYates(arr){
   return arr;
 }
 
+function maybeReshuffleForCard(card){
+  if(!card) return;
+  if(!state.shuffleAnswers) return;
+  // If we've navigated to a new card, force a new option order for THIS card (even if visited before).
+  if(state.lastCardId !== card.id){
+    state.optionOrder[card.id] = null; // clear cached order for this card
+    state.lastCardId = card.id;
+  }
+}
+
 function getDisplayOptions(card){
-  // Return options in display order (possibly shuffled). Stable per card while prefs unchanged.
-  if(!state.shuffleAnswers) {
-    state.optionOrder[card.id] = null;
+  if(!state.shuffleAnswers){
     return card.options || [];
   }
-  if(state.optionOrder[card.id]) return state.optionOrder[card.id];
 
-  const opts = (card.options||[]).map((o, idx)=>({ ...o, _origIndex: idx }));
-  fisherYates(opts);
-  state.optionOrder[card.id] = opts;
-  return opts;
+  // Ensure re-shuffle on navigation: if order is null OR missing, create a fresh shuffle now.
+  if(!state.optionOrder[card.id]){
+    const opts = (card.options||[]).map(o => ({...o}));
+    fisherYates(opts);
+    state.optionOrder[card.id] = opts;
+  }
+  return state.optionOrder[card.id];
 }
 
 function correctDisplayIndices(card){
@@ -135,9 +146,9 @@ function applyFilters(){
 
   state.view = cards;
   if(state.idx >= state.view.length) state.idx = 0;
-  // Reset per-view option orders if answers shuffle toggled
-  if(!state.shuffleAnswers) state.optionOrder = {};
   clearInteraction();
+  state.optionOrder = {}; // reset cached option orders when filters change
+  state.lastCardId = null;
   render();
 }
 
@@ -229,6 +240,9 @@ function render(){
     setFlipped(false);
     return;
   }
+
+  // IMPORTANT: force a fresh answer shuffle whenever we land on a new card.
+  maybeReshuffleForCard(card);
 
   $('front').innerHTML = state.quizMode ? formatFrontQuiz(card) : formatFrontFlashcard(card);
   $('back').innerHTML = formatBack(card);
@@ -344,13 +358,11 @@ async function boot(){
   $('btnCorrect').addEventListener('click', () => mark('correct'));
   $('btnWrong').addEventListener('click', () => mark('wrong'));
 
-  $('toggleShuffle').addEventListener('change', (e)=>{
-    state.shuffleQuestions = e.target.checked; savePrefs(); applyFilters();
-  });
+  $('toggleShuffle').addEventListener('change', (e)=>{ state.shuffleQuestions = e.target.checked; savePrefs(); applyFilters(); });
   $('toggleShuffleAnswers').addEventListener('change', (e)=>{
     state.shuffleAnswers = e.target.checked;
-    // reset per-card order so current card reshuffles immediately
-    state.optionOrder = {};
+    state.optionOrder = {}; // clear orders so it applies immediately
+    state.lastCardId = null;
     savePrefs();
     clearInteraction();
     render();
