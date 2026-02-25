@@ -19,6 +19,13 @@
   </header>
 
   <main class="container">
+    <section class="controls">
+      <button class="btn" id="btnPrev" aria-label="Previous">◀</button>
+      <button class="btn primary" id="btnFlip">Flip</button>
+      <button class="btn primary" id="btnSubmit" style="display:none">Submit</button>
+      <button class="btn" id="btnNext" aria-label="Next">▶</button>
+    </section>
+
     <section class="cardwrap" aria-live="polite">
       <div class="card" id="card">
         <div class="face front" id="front"></div>
@@ -27,6 +34,11 @@
     </section>
 
     <section class="feedback" id="feedback" aria-live="polite"></section>
+
+    <section class="marking">
+      <button class="btn good" id="btnCorrect">I got it ✓</button>
+      <button class="btn bad" id="btnWrong">I missed ✕</button>
+    </section>
 
     <section class="toolbar">
       <label class="toggle"><input type="checkbox" id="toggleShuffle" /> Shuffle</label>
@@ -44,21 +56,6 @@
       <div class="small">Tip: Add to Home Screen for an app-like experience.</div>
     </footer>
   </main>
-
-  <!-- Bottom controls stack (as requested): Flip + navigation above 'I got it' buttons -->
-  <section class="bottomstack">
-    <section class="controls">
-      <button class="btn" id="btnPrev" aria-label="Previous">◀</button>
-      <button class="btn primary" id="btnFlip">Flip</button>
-      <button class="btn primary" id="btnSubmit" style="display:none">Submit</button>
-      <button class="btn" id="btnNext" aria-label="Next">▶</button>
-    </section>
-
-    <section class="marking">
-      <button class="btn good" id="btnCorrect">I got it ✓</button>
-      <button class="btn bad" id="btnWrong">I missed ✕</button>
-    </section>
-  </section>
 
   <script src="app.js"></script>
 </body>
