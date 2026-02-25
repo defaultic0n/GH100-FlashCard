@@ -1,18 +1,20 @@
-# GH-100 Flashcards (Phone-friendly PWA)
-
-Generated from **GH-100 GitHub Admin Cert Exam QnA.docx**.
-
-## What it does
-- Works in mobile Safari/Chrome.
-- Offline-capable.
-- Flashcard mode: Flip to reveal the **yellow-highlighted** answer(s).
-- **Quiz mode**: tap option(s) and Submit (single-answer auto-submits).
-- Track performance (stored locally on the device).
-
-## Quick start (local)
-Serve with any static server:
-- Python: `python -m http.server 8080`
-Then open `http://<your-ip>:8080/gh100-flashcards-quiz-pwa/` on your phone.
-
-## GitHub Pages (recommended)
-Upload the folder contents to a repo and enable **Settings → Pages**.
+{
+  "name": "GH-100 Flashcards",
+  "short_name": "GH-100",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
