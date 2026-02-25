@@ -1,9 +1,17 @@
-# GH-100 Flashcards (PWA)
+# GH100-FlashCard (Complete)
 
-Update: **Shuffle answers** now re-shuffles the options **every time you navigate** (Next/Prev or after marking).
+This folder is a complete static PWA you can upload to your GitHub Pages repo root.
 
-Includes:
+Included features:
+- Flashcard mode + Quiz mode
 - Shuffle questions
-- Shuffle answers (re-shuffle on navigation)
-- Quiz mode + Flashcard mode
-- Bottom navigation bar
+- Shuffle answers (re-shuffles on every navigation)
+- Bottom navigation (Flip/Submit + Prev/Next above I got it/I missed)
+- Update banner (prompts refresh when a new version is deployed)
+
+## Deploy
+1. Upload all files in this folder to repo root.
+2. Settings → Pages → Deploy from branch (main) / root.
+
+## Update reliably
+- When you deploy a new version, change CACHE_NAME in service-worker.js (e.g. v2, v3) and commit.
