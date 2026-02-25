@@ -1,20 +1,17 @@
-{
-  "name": "GH-100 Flashcards",
-  "short_name": "GH-100",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#111827",
-  "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
+# GH100-FlashCard (FULL FIX)
+
+This folder contains a complete static PWA for GitHub Pages.
+
+## Fixes included
+- index.html is valid HTML
+- cards.json is DATA ONLY (questions/options/answers)
+- app.js contains the application logic (quiz + flashcards)
+- shuffle questions + shuffle answers (reshuffles on navigation)
+- bottom navigation controls
+- update banner for new deployments
+
+## Deploy
+Upload all files in this folder to your repo root and enable GitHub Pages (main / root).
+
+Cache name: gh100-flashcards-fullfix-v1
+Cards: 41

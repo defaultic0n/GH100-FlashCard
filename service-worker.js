@@ -1,17 +1,35 @@
-# GH100-FlashCard (FULL FIX)
+const CACHE_NAME = 'gh100-flashcards-fullfix-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './styles.css',
+  './app.js',
+  './cards.json',
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
+];
 
-This folder contains a complete static PWA for GitHub Pages.
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
+});
 
-## Fixes included
-- index.html is valid HTML
-- cards.json is DATA ONLY (questions/options/answers)
-- app.js contains the application logic (quiz + flashcards)
-- shuffle questions + shuffle answers (reshuffles on navigation)
-- bottom navigation controls
-- update banner for new deployments
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(keys.map(k => k !== CACHE_NAME ? caches.delete(k) : null)))
+      .then(() => self.clients.claim())
+  );
+});
 
-## Deploy
-Upload all files in this folder to your repo root and enable GitHub Pages (main / root).
+self.addEventListener('message', (event) => {
+  if(event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
-Cache name: gh100-flashcards-fullfix-v1
-Cards: 41
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then(cached => cached || fetch(event.request))
+  );
+});
