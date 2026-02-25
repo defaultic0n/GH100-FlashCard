@@ -1,7 +1,17 @@
-# GH100-FlashCard (Replaced Q&A)
+# GH100-FlashCard (FULL FIX)
 
-This build replaces all questions/answers using the attached DOCX. Correct answers are the ones highlighted in yellow.
+This folder contains a complete static PWA for GitHub Pages.
 
-Features: Quiz mode, flashcard mode, shuffle questions, shuffle answers (reshuffle on navigation), update banner.
+## Fixes included
+- index.html is valid HTML
+- cards.json is DATA ONLY (questions/options/answers)
+- app.js contains the application logic (quiz + flashcards)
+- shuffle questions + shuffle answers (reshuffles on navigation)
+- bottom navigation controls
+- update banner for new deployments
 
-Deploy: upload all files to repo root and enable GitHub Pages.
+## Deploy
+Upload all files in this folder to your repo root and enable GitHub Pages (main / root).
+
+Cache name: gh100-flashcards-fullfix-v1
+Cards: 41

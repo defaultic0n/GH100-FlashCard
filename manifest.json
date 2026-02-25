@@ -46,7 +46,6 @@
     </footer>
   </main>
 
-  <!-- Bottom controls stack: Flip + navigation above 'I got it' buttons -->
   <section class="bottomstack">
     <section class="controls">
       <button class="btn" id="btnPrev" aria-label="Previous">◀</button>
@@ -61,7 +60,6 @@
     </section>
   </section>
 
-  <!-- Update banner -->
   <div id="updateBanner" class="update-banner hidden" role="status" aria-live="polite">
     <span>🔄 New version available</span>
     <button id="btnUpdate" type="button">Refresh</button>

@@ -19,7 +19,7 @@ const state = {
 };
 
 const STORAGE_KEY = 'gh100_flashcards_progress_v1';
-const PREF_KEY = 'gh100_flashcards_prefs_v_complete';
+const PREF_KEY = 'gh100_flashcards_prefs_v_fullfix';
 
 function loadProgress(){
   try{ state.progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch{ state.progress = {}; }
