@@ -9,7 +9,7 @@
     },
     {
       "id": "hard25",
-      "name": "Hard Deck (GPT)",
+      "name": "GH-100 Hard Deck (GPT)",
       "file": "hard.json",
       "description": "25 hard questions in a separate deck."
     }
