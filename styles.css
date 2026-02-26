@@ -46,3 +46,52 @@
 .update-banner{position:fixed;left:12px;right:12px;bottom:calc(190px + env(safe-area-inset-bottom));background:#2563eb;color:#fff;padding:12px 14px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 10px 25px rgba(0,0,0,.35);z-index:9999;font-weight:700}
 .update-banner button{background:#fff;color:#2563eb;border:none;padding:8px 12px;border-radius:10px;font-weight:800;cursor:pointer}
 .update-banner.hidden{display:none}
+
+/* === Mobile fix: keep Prev / Reveal / Submit / Next in ONE row === */
+@media (max-width: 420px) {
+  /* Prevent wrapping in the bottom control row */
+  .bottomstack .controls {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  /* Make all buttons slimmer on small screens */
+  .bottomstack .controls .btn {
+    min-width: 0 !important;       /* override baseline min-width */
+    padding: 8px 8px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  /* Make Prev/Next compact squares */
+  #btnPrev, #btnNext {
+    width: 42px;
+    min-width: 42px !important;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Make Reveal + Submit shorter so they fit */
+  #btnFlip, #btnSubmit {
+    min-width: 78px !important;    /* adjust down if you need */
+    padding: 8px 10px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 360px) {
+  #btnFlip, #btnSubmit {
+    min-width: 68px !important;
+    padding: 8px 8px;
+  }
+
+  .bottomstack .controls .btn {
+    font-size: 12px;
+  }
+
+  #btnPrev, #btnNext {
+    width: 38px;
+    min-width: 38px !important;
+  }
+}
+
