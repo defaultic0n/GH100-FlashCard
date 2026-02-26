@@ -1,0 +1,8 @@
+When you add a new deck later (e.g., deck2.json):
+
+Create deck2.json (same schema as cards.json)
+Add entry into decks.json
+Add deck2.json into the ASSETS list in service-worker.js (or switch SW to cache-on-demand)
+Bump CACHE_NAME
+
+This keeps GitHub Pages + PWA updates consistent.
