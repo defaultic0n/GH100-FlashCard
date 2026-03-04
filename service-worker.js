@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gh100-flashcards-multideck-v1';
+const CACHE_NAME = 'gh100-flashcards-baseline2-v1';
 const ASSETS = [
   './',
   './index.html',

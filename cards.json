@@ -196,7 +196,7 @@
         "SCIM deactivates GitHub accounts when users are deleted from the identity provider.",
         "SCIM automates user provisioning when new users are added to the identity provider."
       ],
-      "explanation": ""
+      "explanation": "SCIM automatically updates a user's account on GitHub whenever their profile attributes change in the identity provider. When a user is removed or deacticated in IdP, SCIM deactivates (soft provisions) their GitHub account and disables access. SCIM provisions new GitHub Enterprise Cloud accounts automatically when users are added in the identity provider"      
     },
     {
       "id": 9,
@@ -222,7 +222,7 @@
       "answers": [
         "The non-partner identity provider integrations require manual configuration of SAML 2.0 details."
       ],
-      "explanation": ""
+      "explanation": "Non-partner identity provider integrations require you to enter SAML2.0 configuration details by hand - such as the Sign-on URL, Issuer, and X.509 certificate - whereas partner IdPs supply a pre-configured application integration"
     },
     {
       "id": 10,
@@ -248,7 +248,7 @@
       "answers": [
         "Group SCIM enables centralized user and group management through the IdP"
       ],
-      "explanation": ""
+      "explanation": "GroupSCIM lets you manage both user accounts and group memberships centrally in your identity provider - automatically provisioning, updating and deplovisioning users and groups in GitHub - whereas TeamSync only mirror IdP group membership into existing GitHub teams."
     },
     {
       "id": 11,
@@ -310,7 +310,7 @@
         "EMU accounts restrict users to enterprise-related activities only",
         "EMU accounts are owned by the organization and cannot be unlinked"
       ],
-      "explanation": ""
+      "explanation": "Enterprise Manage User accounts are provisioned and authenticated exclusively through your identity provider (e.g. AzureAD), so the IdP handles their creation, attirbute updates and deprovisioning. Managed user accounts cannot create public content or interact with repositories outside your enterprise, they're confined to private and internal repos within the enterprise. EMU accounts are owned and controlled by the enterprise (via IdP) and cannot be converted into or unlinked as personal accounts outside that enterprise."
     },
     {
       "id": 13,
@@ -336,7 +336,7 @@
       "answers": [
         "Enterprise-wide SAML SSO ensures users authenticate through the same IdP across all organizations"
       ],
-      "explanation": ""
+      "explanation": "Enterprise-wide SAML SSO enforces a single IdP accross all member organizations. Its configuration overrides any per-organization SAML settings, so everyone must authenticate through the same provider"
     },
     {
       "id": 14,
@@ -362,7 +362,7 @@
       "answers": [
         "EMUs are fully controlled by an IdP and cannot log in with personal credentials"
       ],
-      "explanation": ""
+      "explanation": "EMU accounts are provisioned and authenticated exclusively through your identity provider - users sign in via the IdP and cannot use or manage GitHub-native credentials"
     },
     {
       "id": 15,
@@ -388,7 +388,7 @@
       "answers": [
         "Clearly define how identity provider groups will align with GitHub teams and roles"
       ],
-      "explanation": ""
+      "explanation": "Before you enable team synchonization, you should clearly define how groups in your identity provider will map to GitHub teams and roles - ensuring that when the sync runs, user land in the correct teams with the right permissions"
     },
     {
       "id": 16,
@@ -466,7 +466,7 @@
       "answers": [
         "Fine-grained PATs permissions can be scoped to specific repositories"
       ],
-      "explanation": ""
+      "explanation": "Fine-grained personal access tokes let you scope permissions down to individual repositories, whereas classic PATs grant access across every repo the user can reach"
     },
     {
       "id": 19,
@@ -622,7 +622,7 @@
       "answers": [
         "They are granted explicit access to specific repositories"
       ],
-      "explanation": ""
+      "explanation": "Outside collaborators aren't organization members; instead, they are granted explicit access - at read, write, or admin level - to only the repositories you choose"
     },
     {
       "id": 25,
@@ -676,7 +676,7 @@
         "Create repositories without approval from other members",
         "Manage organization settings, such as configuration and default permissions"
       ],
-      "explanation": ""
+      "explanation": "Organization owners can view and edit billing information for the organization. Organization owners may create new repositories in the organization without needing approval from other members. Organization onwers have full administrative control over organization settings, including configuring default repository permissions."
     },
     {
       "id": 27,
@@ -733,7 +733,7 @@
       "answers": [
         "Push code to non-protected branches"
       ],
-      "explanation": ""
+      "explanation": "Users granted Write permission can push commits to non-protected branches, allowing them to update code without needing administrative rights"
     },
     {
       "id": 29,
@@ -786,7 +786,7 @@
         "Managing nested sub-teams",
         "Adding or removing team members"
       ],
-      "explanation": ""
+      "explanation": "Team maintainers can manage nested sub-teams - requesting to add or change parent/child teams within the organization's heirarchy. Team maintainers have permission to add and remove members from their team, controlling day-to-day team membership"
     },
     {
       "id": 31,
@@ -812,7 +812,7 @@
       "answers": [
         "Repository Setting > Manage Access"
       ],
-      "explanation": ""
+      "explanation": "Use the RepositorySettingManageAccess page to view all users and teams with access and their assigned permission levels"
     },
     {
       "id": 32,
@@ -926,7 +926,7 @@
       "answers": [
         "Dependency Graph"
       ],
-      "explanation": ""
+      "explanation": "The Dependecy Graph continuously analyzes your repository's manifest and lock files to build an inventory of direct and transitive dpendencies and flags any that match entries in the GitHub Advisory Database, surfacing known vulnerabilities"
     },
     {
       "id": 36,
@@ -984,7 +984,7 @@
       "answers": [
         "Each API action made with the token generates a separate audit log entry"
       ],
-      "explanation": ""
+      "explanation": "Each API call authenticated with a token generates its own audit-log event, so you'll see a distinct entry for every action performed across different resources, each annotated with the token's hashed ID, actor, and source IP"
     },
     {
       "id": 38,
@@ -1010,7 +1010,7 @@
       "answers": [
         "Designing your application to work within GitHub's rate limits"
       ],
-      "explanation": ""
+      "explanation": "Designing your integration to stay within GitHub documented rate limits-by batching requests, using conditional requests, handling 429 responses with back-off, and monitoring the X-RateLimit-* headers - ensures you won't be temporarly throttled or cut off when you hit secodary limits"
     },
     {
       "id": 39,

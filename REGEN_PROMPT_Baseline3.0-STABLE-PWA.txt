@@ -1,0 +1,126 @@
+Purpose:
+Recreate GH100 Flashcards — Baseline 3.0 STABLE.
+
+This baseline guarantees:
+- Auto-discover decks via decks.auto.json
+- Safe deck loading (one broken deck never breaks app)
+- PWA cache versioning with explicit bump
+- Desktop/mobile parity
+- Startup banner showing deck count
+
+STRICT RULES:
+- app.js logic MUST match Baseline 3.0
+- service-worker.js MUST use versioned cache guard
+- decks.auto.json is authoritative
+- No new files outside the Baseline 3.0 contract
+
+=========================
+
+🧱 1. What Baseline 3.0 MEANS (clear contract)
+Baseline 3.0 is not “new features”.
+It is a stability contract.
+✅ Guaranteed properties
+
+Desktop and mobile always behave the same
+One broken deck cannot break the app
+Deck additions never require editing app.js
+PWA cache updates are intentional, visible, controlled
+Regeneration is possible from a single prompt
+
+Once promoted:
+
+❌ No ad‑hoc edits
+✅ Only versioned changes
+
+
+🔒 2. Files that are now FROZEN
+These files define Baseline 3.0 behavior.
+You do not change logic inside them without a new baseline number.
+🔐 Frozen logic files
+app.js              ✅ Safe loader + auto-discover
+service-worker.js   ✅ Versioned cache guard
+index.html          ✅ Stable DOM contract
+styles.css          ✅ Mobile layout contract
+
+Allowed change later:
+
+bump cache version ✅
+cosmetic CSS tweaks ✅ (no structural DOM changes)
+
+
+🧠 3. Files that are SAFE TO CHANGE ANYTIME
+These are data only. Baseline 3.0 explicitly allows them to evolve.
+✅ Data / content files
+decks.auto.json          ✅ add/remove decks
+cards.json               ✅ update questions
+hard.json
+Actual4Test_cards.json
+QnAfromMultiSite_cards.json
+ShapingPixel_cards.json  ✅ new deck
+
+Rule:
+
+✅ Add decks
+✅ Remove decks
+❌ Never embed logic in JSON
+
+
+🧭 4. Baseline 3.0 Folder Contract (authoritative)
+Your repo root must always look like this:
+/
+├─ index.html
+├─ styles.css
+├─ app.js
+├─ service-worker.js
+├─ manifest.json
+├─ decks.auto.json
+├─ decks.json              (fallback only)
+├─ cards.json
+├─ hard.json
+├─ Actual4Test_cards.json
+├─ QnAfromMultiSite_cards.json
+├─ ShapingPixel_cards.json
+└─ icons/
+   ├─ icon-192.png
+   └─ icon-512.png
+
+If a future regen produces anything else → ❌ reject it.
+
+🧪 5. Baseline 3.0 Self‑Validation Rules
+Every Baseline 3.x instance must pass these without exception:
+✅ Runtime checks
+
+Startup banner shows:
+✅ X decks loaded
+
+
+If X = 0 → ❌ hard failure
+
+✅ Failure tolerance
+
+Delete one deck file → app still loads
+Corrupt one deck JSON → app still loads
+Remove decks.json → app still loads via decks.auto.json
+
+✅ Mobile parity
+
+Clear mobile cache
+Reload PWA
+Deck count must match desktop
+
+
+🔁 6. Change Rules Going Forward (VERY IMPORTANT)
+✅ Allowed without new baseline
+
+Add new deck JSON
+Edit questions
+Edit decks.auto.json
+Bump CACHE_VERSION
+
+❌ Requires Baseline 3.1+
+
+Any change to deck loading logic
+Any change to service worker strategy
+Any change to DOM structure relied on by JS
+
+Think of Baseline 3.0 as an API.
