@@ -1,19 +1,11 @@
-# GH100-FlashCard (Multi-Deck)
+# GH100-FlashCard — Baseline No. 2
 
-This build supports multiple questionnaire decks loaded from separate JSON files.
+Features:
+- Multi-deck loading via decks.json (cards.json + hard.json)
+- Mobile bottom controls forced into a single row using icons (👁 + ✅)
+- Mobile toolbar controls (Shuffle Q/A, Only missed, Quiz, Reset) displayed in 2 rows using icons
+- PWA service worker cache name: gh100-flashcards-baseline2-v1
 
-## Decks
-- Main Deck: cards.json (from DOCX; yellow highlight = correct)
-- Hard Deck (25): hard.json
-
-Deck list is managed in decks.json.
-To add future decks:
-1) Create a new JSON file with format: { title, cards: [{id, question, options:[{text,isCorrect}], answers:[text], explanation}] }
-2) Add an entry to decks.json: {id, name, file, description}
-3) Add the new file name to the service worker ASSETS list (or bump cache name)
-
-Counts:
-- Main Deck: 41
-- Hard Deck: 25
-
-Cache name: gh100-flashcards-multideck-v1
+Deck sizes:
+- Main deck: 41 cards
+- Hard deck: 25 cards

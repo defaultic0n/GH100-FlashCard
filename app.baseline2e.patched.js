@@ -226,19 +226,6 @@ function formatFrontQuiz(card){
   `;
 }
 
-function showStartupBanner(msg, timeout = 3000){
-  const banner = document.getElementById('startupBanner');
-  const text = document.getElementById('startupBannerText');
-  if(!banner || !text) return;
-
-  text.textContent = msg;
-  banner.classList.remove('hidden');
-
-  setTimeout(() => {
-    banner.classList.add('hidden');
-  }, timeout);
-}
-
 function formatBack(card){
   const answers = (card.answers||[]).map(a => `<li><strong>${escapeHtml(a)}</strong></li>`).join('');
   const expl = card.explanation ? `<div class="muted">${escapeHtml(card.explanation)}</div>` : `<div class="muted">No explanation provided.</div>`;
@@ -432,22 +419,15 @@ function setupServiceWorker(){
 
 // === Baseline 2e: Auto-discover config + Safe deck loading ===
 async function fetchDeckConfig(){
-  // Prefer the most complete/valid config.
-  // Fix: an old decks.auto.json (with fewer decks) was overriding decks.json.
-  const candidates = ['decks.json','decks.auto.json'];
-  const configs = [];
-  for(const f of candidates){
+  const files = ['decks.auto.json','decks.json'];
+  let lastErr;
+  for(const f of files){
     try{
       const r = await fetch(f, { cache: 'no-store' });
-      if(!r.ok) continue;
-      const cfg = await r.json();
-      const decks = Array.isArray(cfg.decks) ? cfg.decks : [];
-      if(decks.length) configs.push({ file: f, cfg, count: decks.length });
-    }catch(e){ /* ignore */ }
+      if(r.ok) return await r.json();
+    }catch(e){ lastErr = e; }
   }
-  if(!configs.length) throw new Error('No deck config found');
-  configs.sort((a,b)=> (b.count - a.count) || (a.file === 'decks.json' ? -1 : 1));
-  return configs[0].cfg;
+  throw (lastErr || new Error('No deck config found'));
 }
 
 async function loadDecksSafe(){
@@ -465,7 +445,7 @@ async function loadDecksSafe(){
         const r = await fetch(deck.file, { cache: 'no-store' });
         if(!r.ok) throw new Error('deck file not found');
         const data = await r.json();
-        const cards = Array.isArray(data.cards) ? data.cards : (Array.isArray(data.questions) ? data.questions : []);
+        const cards = Array.isArray(data.cards) ? data.cards : [];
         if(cards.length === 0){
           console.warn(`Deck "${deck.id}" has no cards, skipped`);
           continue;
@@ -513,7 +493,6 @@ async function loadDecksMeta(){
 
   sel.value = state.deckId;
   sel.addEventListener('change', async (e)=>{ await switchDeck(e.target.value); });
-  showStartupBanner(`✅ ${state.decksMeta.decks.length} decks loaded`);
 }
 
 
@@ -535,7 +514,7 @@ async function switchDeck(deckId){
 
   state.deckName = d.name || 'Deck';
   const deckData = d._data || {};
-  state.all = Array.isArray(deckData.cards) ? deckData.cards : (Array.isArray(deckData.questions) ? deckData.questions : []);
+  state.all = Array.isArray(deckData.cards) ? deckData.cards : [];
 
   state.idx = 0;
   state.search = '';
