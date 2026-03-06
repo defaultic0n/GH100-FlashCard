@@ -46,8 +46,239 @@ B.  Two-factor authentication
 C.  Personal Access Tokens
 D.  SSH keys
 
-Answer: 
+Answer: A
 Explanation: A
 
 
+6. Where does a user authenticate after enabling SAML Single sign-on? Select only one answer.
+A.  With a GitHub login
+B.  With the organization credentials
+C.  With the Identity Provider (IdP)
+D.  With a two-factor authentication login
 
+Answer: C
+Explanation: Users authenticate with the Identity Provider (IdP) after enabling SAML SSO.
+
+7. What two-factor authentication method supports the secure backup of your authentication codes in the cloud? Select only one answer.
+A.  Time-based One-time Password (TOTP)
+B.  Short Message Service (SMS)
+C.  Security Key
+D.  Phone call
+
+Answer: A
+Explanation:  TOTP supports secure backup of authentication codes in the cloud.
+
+
+
+8. What type of user authentication is used to verify a user identity against a known identity provider?
+Select only one answer.
+A.  Two-factor authentication (2FA)
+B.  Time-based One-time Password (TOTP)
+C.  SAML Single Sign-on (SAML SSO)
+D.  Short Message Service (SMS)
+
+Answer: C
+Explanation: SAML SSO verifies user identity against an identity provider.
+
+
+9. You're an admin and want to enable team synchronization for your organization. What installation permissions do you need to configure team synchronization for Microsoft Entra ID?
+Select only one answer.
+A.  Provide the tenant URL
+B.  Read all users' full profiles
+C.  Generate a valid Single Sign-on for Web Systems (SSWS) token
+D.  Enable SAML Single Sign-on (SSO)
+
+Answer: B
+Explanation: Reading all users' full profiles is required to configure team synchronization.
+
+
+10. You want to grant a user the permissions required to add and remove organization members to and from a team. Which permission would you need to grant that user?
+Select only one answer.
+A.  The admin permission on a repository
+B.  The maintain permission on a repository
+C.  Organization billing manager
+D.  Team maintainer
+
+Answer: D
+Explanation: Team maintainer permissions allow adding and removing members from a team
+
+
+11. What's the purpose of a team?
+Select only one answer.
+A.  A team allows you to manage an organization account.
+B.  A team allows you to control permission levels for an enterprise.
+C.  A team allows a single user to sign in using different accounts credentials.
+D.  A team is intended to reflect a company or group's structure. It's used to provide cascading access permissions and make it easy to notify all team members via mentions.
+
+Answer: D
+Explanation: Teams are used for structuring groups and managing permissions efficiently.
+
+
+12. What's the appropriate repository permission level for contributors who need to actively push changes to your repository?
+A.  admin
+B.  write
+C.  triage
+D.  maintain
+
+Answer: B
+Explanation: Write permissions allow contributors to push changes to the repository.
+
+
+13. What's the difference between GitHub organization accounts and GitHub personal/user accounts?
+A.  Organizational accounts are shared accounts, while personal/user accounts are for individuals.
+B.  You pay more for organization accounts versus personal/user accounts.
+C.  They're exactly the same.
+D.  Personal/user accounts have more access than organization accounts.
+
+Answer: A
+Explanation:  Organizational accounts enable shared access among multiple users, whereas personal accounts are intended for use by a single individual.
+
+
+14. What's the best reason to decide to upgrade to the GitHub Enterprise product?
+A.  Because you want to use GitHub Actions and Codespaces.
+B.  Because your VP needs to use GitHub Insights.
+C.  Because you want to centrally manage users and repositories across multiple organizations.
+D.  Because you want to use the team pull request reviewers feature.
+
+Answer: C
+Explanation: Centralized management is a key feature of GitHub Enterprise.
+
+
+15. What is a feature of GitHub Connect?
+A.  Sharing data between GitHub Enterprise Server and GitHub Enterprise Cloud.
+B.  Allowing you to limit the sharing of your organization's documentation.
+C.  It has authentication with Security Assertion Markup Language (SAML) single sign-on and access provisioning with SAML or System for Cross-domain Identity Management (SCIM).
+D.  Allows instant messaging between users
+
+Answer: A
+Explanation: GitHub Connect enables sharing data between GitHub Enterprise Server and GitHub Enterprise Cloud.
+
+
+16. What feature can you use to expand the kinds of actions that you can automate in response to common GitHub events?
+A.  GitHub Actions
+B.  GitHub Advanced Security
+C.  Dependabot
+D.  Code scanning
+
+Answer: A
+Explanation: GitHub Actions allows you to automate responses to GitHub events.
+
+
+17. What actions can you take at enterprise level to manage the use of GitHub Actions in your enterprise instance?
+A.  Create workflow templates
+B.  Configure a GitHub Actions use policy
+C.  Manually sync public actions in Enterprise Cloud
+D.  Enable secret scanning
+
+Answer: B
+Explanation: Configuring a use policy is a key action for managing GitHub Actions.
+
+
+18. What actions can you take to configure self-hosted runners for your enterprise use?
+A.  Create and add custom labels to your runners
+B.  Add proxy configurations to your runners after they start.
+C.  Add the IP address or IP address range of your runners at repository level.
+D.  Configure self-hosted runners to automatically update their operating system.
+
+Answer: A
+Explanation: Adding custom labels helps organize and manage self-hosted runners.
+
+
+19. What are encrypted secrets?
+A.  Encrypted secrets are authentication tokens you can generate in your account settings.
+B.  Encrypted secrets are the equivalent of SSH keys in GitHub.
+C.  Encrypted secrets are encrypted environment variables you can create to store sensitive information.
+D.  Encrypted secrets are public keys used to encrypt data in transit.
+
+Answer: C
+Explanation:  Encrypted secrets are used to securely store sensitive environment variables.
+
+
+20. GitHub support is limited to which of the following issues?
+A.  Account, Security, and Abuse issues.
+B.  Security, server, and 2FA issues.
+C.  Account, server, and security issues.
+D.  Account, 2FA, and security issues.
+
+Answer: A
+Explanation: GitHub support focuses on account, security, and abuse-related issues.
+
+
+21. Which GitHub priority should you use to report critical system failures?
+A.  Urgent
+B.  High
+C.  Normal
+D.  Low
+
+Answer: A
+Explanation: 'Urgent' is the priority for critical system failures.
+
+
+22. What's a function you can execute on GitHub Mobile?
+A.  Check out branches with pull requests and view CI statuses.
+B.  Compare changed images.
+C.  Add and clone repositories.
+D.  Manage, triage, and clear notifications from github.com.
+
+Answer: D
+Explanation:  GitHub Mobile allows you to manage notifications effectively.
+
+
+23. What is the best way to report a bug to a GitHub project?
+A.  Send an email to a project owner.
+B.  I don't bother reporting software bugs because there's no transparency, and they never get fixed anyway.
+C.  Search for the bug in the project's existing issues, and create a new one if it hasn't been reported yet.
+D.  Create a detailed issue report with steps to reproduce the bug.
+
+Answer: C
+Explanation: Searching for existing issues and creating a new one if necessary is the best way to report a bug.
+
+
+24. Suppose you created a bug fix on a new branch and want it to become part of the next production build generated from the main branch. What should you do next?
+A.  Copy your branch changes and commit them directly to the main branch.
+B.  Create a pull request to merge your new branch into the main branch.
+C.  On second thought, maybe I won't share this fix. I'll just put it in my own private version of the source code.
+D.  Create a new branch from the main branch and copy your changes to the new branch.
+
+Answer: B
+Explanation: Pull request is used to start code review and transfer changes from new branches into the main branch.
+
+
+25. Suppose you'd like to work with a project on GitHub, but you don't have write access to the project. What can you do to contribute?
+A.  Fork the project's repository to your GitHub account, clone the forked repository to your local machine, push changes to your repository, and submit a pull request to the target (upstream) repository.
+B.  Clone the project to your local machine and push updates directly to the project repository.
+C.  Use git commands to make a copy of the project so that you can work locally. Submit an issue to get your changes into the target repository.
+D.  Use git commands to make a copy of the project so that you can work locally. Submit a pull request to get your changes into the target repository.
+
+Answer: A
+Explanation: Forking the repository and submitting a pull request is the standard way to contribute without write access.
+
+
+26. When pulling an image to your local environment, which credentials are needed?
+A.  Your GitHub username and a Personal Access Token.
+B.  The name of the organization and an API Key.
+C.  The name of the package and a package key.
+D.  Your GitHub username and a password.
+
+Answer: A
+Explanation: A GitHub username and a Personal Access Token are required to pull an image.
+
+
+27. How can you authenticate to GitHub Packages from your local development environment?
+A.  With an API Key.
+B.  With my GitHub Credentials (username and password).
+C.  With a Personal Access Token.
+D.  With a GitHub App.
+
+Answer: C
+Explanation: A Personal Access Token is required for authentication.
+
+
+28. In which scenarios should you NOT use GitHub Packages?
+A.  When I want to share code between methods of my application.
+B.  When I want to share container images among developers of your team.
+C.  When I want to publish a small code library as an open-source project.
+D.  When I want to manage version control for my codebase.
+
+Answer: A
+Explanation: GitHub Packages is not intended for sharing code between methods of an application
