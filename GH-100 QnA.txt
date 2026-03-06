@@ -29,4 +29,13 @@ Answer: A
 Explanation: Dependabot automates dependency updates to address security vulnerabilities
 
 
-4. 
+4. Which two pieces of information should be included in a security advisory? Select only one answer.
+A.  Product affected and severity.
+B.  Severity and exposure list.
+C.  Administrator name and severity.
+D.  Exposures list and administrator name.
+
+Answer: A
+Explanation: A security advisory should include the affected product and the severity of the issue
+
+
