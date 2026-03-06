@@ -1,5 +1,5 @@
 // Bump this when you change core app files (index/app/styles/manifest/icons/etc.)
-const CACHE_NAME = 'gh100-flashcards-baseline2e-swr-v1';
+const CACHE_NAME = 'gh100-flashcards-baseline2e-swr-v2';
 
 // Core “app shell” assets to precache (keep stable)
 const ASSETS = [
@@ -18,6 +18,7 @@ const ASSETS = [
   './Actual4Test_cards.json',
   './QnAfromMultiSite_cards.json',
   './ShapingPixel_cards.json',
+  './MS_Practise_QnA_cards.json',
 
   './manifest.json',
 

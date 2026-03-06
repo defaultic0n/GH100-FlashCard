@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "3.0-stable",
-    "decks": 5,
+    "decks": 6,
     "defaultDeckId": "base"
   },
   "defaultDeckId": "base",
@@ -34,6 +34,12 @@
       "id": "shapingpixel",
       "name": "ShapingPixel Deck",
       "file": "ShapingPixel_cards.json",
+      "version": "3.0-stable"
+    },
+    {
+      "id": "mspractiseqna",
+      "name": "MS Practise QnA",
+      "file": "MS_Practise_QnA_cards.json",
       "version": "3.0-stable"
     }
   ]
