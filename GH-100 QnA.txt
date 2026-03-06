@@ -39,3 +39,15 @@ Answer: A
 Explanation: A security advisory should include the affected product and the severity of the issue
 
 
+5. As an organization owner, you want to ensure that everyone who is signed in to your corporate network can access the GitHub website without requiring a second sign-in. Which technology would you enable to accomplish this?
+Select only one answer.
+A.  Single sign-on
+B.  Two-factor authentication
+C.  Personal Access Tokens
+D.  SSH keys
+
+Answer: 
+Explanation: A
+
+
+
