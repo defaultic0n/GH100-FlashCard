@@ -4,8 +4,8 @@
     "deckId": "multisite",
     "deckName": "MultiSite Deck",
     "version": "Baseline2c",
-    "source": "QnAfromMultiSite.txt",
-    "notes": "Question 5 removed as duplicate; Merged ShapingPixel.txt questions"
+    "source": "QnAfromMultiSite.txt + NewQnA.txt",
+    "notes": "Question 5 removed as duplicate; Merged ShapingPixel.txt questions; Added questions from NewQnA.txt"
   },
   "cards": [
     {
@@ -1258,6 +1258,710 @@
         "Custom repository creation message"
       ],
       "explanation": "Enterprise owners can set a custom message to guide users toward internal compliance or documentation during repo creation"
+    },
+    {
+      "id": 49,
+      "question": "An enterprise wants to prevent individual orgs from disabling required PR reviews. What should they configure?",
+      "options": [
+        {
+          "text": "Org-level branch protection",
+          "isCorrect": false
+        },
+        {
+          "text": "An enterprise policy",
+          "isCorrect": true
+        },
+        {
+          "text": "A CODEOWNERS file",
+          "isCorrect": false
+        },
+        {
+          "text": "A workflow requirement",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "An enterprise policy"
+      ],
+      "explanation": "Enterprise policies override org-level settings. Setting this at the enterprise level prevents orgs from weakening the requirement."
+    },
+    {
+      "id": 50,
+      "question": "An admin needs to send logs to GitHub Support for a GHES outage. What should they generate?",
+      "options": [
+        {
+          "text": "GraphQL report",
+          "isCorrect": false
+        },
+        {
+          "text": "A support bundle",
+          "isCorrect": true
+        },
+        {
+          "text": "An audit log export",
+          "isCorrect": false
+        },
+        {
+          "text": "A webhook payload",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "A support bundle"
+      ],
+      "explanation": "A support bundle packages all relevant logs and diagnostics from a GHES instance in a format GitHub Support an analyze"
+    },
+    {
+      "id": 51,
+      "question": "Your self-hosted runner is inside a private network. Actions jobs are failing because github.com is blocked. What should you configure?",
+      "options": [
+        {
+          "text": "IP allow list on GitHub",
+          "isCorrect": false
+        },
+        {
+          "text": "A proxy for the runner",
+          "isCorrect": true
+        },
+        {
+          "text": "A GitHub-hosted runner",
+          "isCorrect": false
+        },
+        {
+          "text": "A runner group",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "A proxy for the runner"
+      ],
+      "explanation": "Self-hosted runners in restricted networks must be configured with a proxy so they can reach GitHub.com to receive job assignments and download Actions"
+    },
+    {
+      "id": 52,
+      "question": "Your company uses Okta. You want GitHub accounts auto-deprovisioned when employees leave. What should you configure?",
+      "options": [
+        {
+          "text": "SAML SSO only",
+          "isCorrect": false
+        },
+        {
+          "text": "Team Synchronization",
+          "isCorrect": false
+        },
+        {
+          "text": "SCIM provisioning",
+          "isCorrect": true
+        },
+        {
+          "text": "2FA enforcement",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "SCIM provisioning"
+      ],
+      "explanation": "SCIM automates user lifecycle management — it provisions new accounts and deprovisions them when users are removed from the IdP, like Okta."
+    },
+    {
+      "id": 53,
+      "question": "What is the key difference between Team Synchronization and SCIM?",
+      "options": [
+        {
+          "text": "Team Sync provisions/deprovisions GitHub accounts; SCIM manages team membership",
+          "isCorrect": false
+        },
+        {
+          "text": "SCIM provisions/deprovisions accounts; Team Sync manages IdP group-to-team mapping",
+          "isCorrect": true
+        },
+        {
+          "text": "They are identical features",
+          "isCorrect": false
+        },
+        {
+          "text": "Team Sync only works with Azure AD",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "SCIM provisions/deprovisions accounts; Team Sync manages IdP group-to-team mapping"
+      ],
+      "explanation": "SCIM manages the user account lifecycle (create/delete). Team Sync maps IdP group memberships to GitHub teams — both can work together for full identity management."
+    },
+    {
+      "id": 54,
+      "question": "A Windows runner uses how many GitHub Actions minutes per actual minute of compute?",
+      "options": [
+        {
+          "text": "1×",
+          "isCorrect": false
+        },
+        {
+          "text": "2×",
+          "isCorrect": true
+        },
+        {
+          "text": "5×",
+          "isCorrect": false
+        },
+        {
+          "text": "10×",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "2×"
+      ],
+      "explanation": "Windows runners are billed at 2× the rate of Linux runners. macOS runners are billed at 10×. Linux is the 1× baseline."
+    },
+    {
+      "id": 55,
+      "question": "A team wants to publish their npm package so other internal teams can consume it in their Actions workflows. What should they use?",
+      "options": [
+        {
+          "text": "GitHub Releases",
+          "isCorrect": false
+        },
+        {
+          "text": "GitHub Gists",
+          "isCorrect": false
+        },
+        {
+          "text": "GitHub Packages",
+          "isCorrect": true
+        },
+        {
+          "text": "A public npm registry",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "GitHub Packages"
+      ],
+      "explanation": "GitHub Packages provides an internal npm registry that integrates with GitHub authentication — ideal for sharing private packages across internal teams."
+    },
+    {
+      "id": 56,
+      "question": "A developer accidentally committed an AWS secret key. It's already pushed. What is the FIRST step?",
+      "options": [
+        {
+          "text": "Delete the repo",
+          "isCorrect": false
+        },
+        {
+          "text": "Revoke the secret in AWS immediately",
+          "isCorrect": true
+        },
+        {
+          "text": "Run git filter-branch",
+          "isCorrect": false
+        },
+        {
+          "text": "Contact GitHub support",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Revoke the secret in AWS immediately"
+      ],
+      "explanation": "The secret is already exposed — revoking it in AWS is the most urgent step to stop potential misuse. Then clean the history and rotate credentials."
+    },
+    {
+      "id": 57,
+      "question": "Which GitHub feature automatically opens PRs to fix packages with known CVEs?",
+      "options": [
+        {
+          "text": "Secret scanning",
+          "isCorrect": false
+        },
+        {
+          "text": "Code scanning",
+          "isCorrect": false
+        },
+        {
+          "text": "Dependabot security updates",
+          "isCorrect": true
+        },
+        {
+          "text": "GitHub Advisory Database",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Dependabot security updates"
+      ],
+      "explanation": "Dependabot security updates automatically create pull requests to bump vulnerable dependencies to safe versions based on the GitHub Advisory Database."
+    },
+    {
+      "id": 58,
+      "question": "What is the key restriction of Enterprise Managed Users (EMUs)?",
+      "options": [
+        {
+          "text": "They cannot use 2FA",
+          "isCorrect": false
+        },
+        {
+          "text": "They cannot own personal repos or join outside orgs",
+          "isCorrect": true
+        },
+        {
+          "text": "They cannot be assigned team roles",
+          "isCorrect": false
+        },
+        {
+          "text": "They cannot access private repos",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "They cannot own personal repos or join outside orgs"
+      ],
+      "explanation": "EMU accounts exist solely within the managing enterprise - they have no personal GitHub identity, cannot own public repos or interact outside the enterprise boundary"
+    },
+    {
+      "id": 59,
+      "question": "A team asks you to help them auto-notify Slack when new issues are opened, without writing custom code. What do you recommend?",
+      "options": [
+        {
+          "text": "A GitHub Action in their workflow",
+          "isCorrect": false
+        },
+        {
+          "text": "A GitHub App from the Marketplace",
+          "isCorrect": true
+        },
+        {
+          "text": "A PAT-based webhook script",
+          "isCorrect": false
+        },
+        {
+          "text": "A GraphQL subscription",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "A GitHub App from the Marketplace"
+      ],
+      "explanation": "GitHub Marketplace Apps (like the official Slack GitHub app) provide pre-built integrations — no custom code required, just install and configure."
+    },
+    {
+      "id": 60,
+      "question": "A company needs GitHub deployed in their own data center for data sovereignty. Which product fits?",
+      "options": [
+        {
+          "text": "GitHub Enterprise Cloud",
+          "isCorrect": false
+        },
+        {
+          "text": "GitHub AE",
+          "isCorrect": false
+        },
+        {
+          "text": "GitHub Enterprise Server",
+          "isCorrect": true
+        },
+        {
+          "text": "GitHub Team",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "GitHub Enterprise Server"
+      ],
+      "explanation": "GHES is self-hosted on the organization's own infrastructure, giving full control over data residency and the deployment environment. GitHub AE is an enterprise-grade GitHub environment that is hosted and operated by GitHub, but deployed in a dedicated, isolated cloud environment (typically Azure) rather than the shared GitHub.com infrastructure. GitHub Team is SaaS plan for small teams; no self‑hosting or sovereignty controls"
+    },
+    {
+      "id": 61,
+      "question": "You want to share a set of runners only with specific repos in your enterprise. What feature enables this?",
+      "options": [
+        {
+          "text": "Encrypted secrets",
+          "isCorrect": false
+        },
+        {
+          "text": "Runner labels",
+          "isCorrect": false
+        },
+        {
+          "text": "Runner groups",
+          "isCorrect": true
+        },
+        {
+          "text": "IP allow lists",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Runner groups"
+      ],
+      "explanation": "Runner groups control which organizations and repositories have access to a set of self-hosted runners, enabling controlled sharing within an enterprise."
+    },
+    {
+      "id": 62,
+      "question": "A developer should be able to create PRs but NOT delete branches or manage settings. What is the correct role?",
+      "options": [
+        {
+          "text": "Admin",
+          "isCorrect": false
+        },
+        {
+          "text": "Maintain",
+          "isCorrect": false
+        },
+        {
+          "text": "Write",
+          "isCorrect": true
+        },
+        {
+          "text": "Triage",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Write"
+      ],
+      "explanation": "The Write role allows creating PRs, merging, and pushing code. Maintain adds branch management. Admin adds settings/deletion. Write is the least-privilege choice here."
+    },
+    {
+      "id": 63,
+      "question": "For an automated deployment bot, what is BETTER than using a PAT tied to a user account?",
+      "options": [
+        {
+          "text": "An OAuth App",
+          "isCorrect": false
+        },
+        {
+          "text": "A GitHub App",
+          "isCorrect": true
+        },
+        {
+          "text": "A deploy key",
+          "isCorrect": false
+        },
+        {
+          "text": "A webhook",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "A GitHub App"
+      ],
+      "explanation": "HitHub Apps authenticate as themselves with fine-grained, repo-scoped permissions and aren't tied to any user — if the user leaves, access isn't lost."
+    },
+    {
+      "id": 64,
+      "question": "An IT development team is configuring branch protection in a GitHub repository. They enable multiple rulesets that apply to the same branch. What outcome should the team expect?",
+      "options": [
+        {
+          "text": "Only rulesets defined at the organization level will be enforced over repository-level rulesets",
+          "isCorrect": false
+        },
+        {
+          "text": "All rulesets that apply will be checked, and their combined rules will be enforced",
+          "isCorrect": true
+        },
+        {
+          "text": "The most recently created ruleset will be the only one enforced",
+          "isCorrect": false
+        },
+        {
+          "text": "Ruleset will cancel each other out, causing uncertain enforcement behaviour",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "All rulesets that apply will be checked, and their combined rules will be enforced"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 65,
+      "question": "A softwre enginering team in a financial enterprise relies on Dependabot to keep dependencies secure. They want to understand how Dependabot decides which security update pull requests to open. What process does Dependabot follow?",
+      "options": [
+        {
+          "text": "Dependabot waits untill all CVSs are manually triage before opening a pull request",
+          "isCorrect": false
+        },
+        {
+          "text": "Dependabot leverages the dependency graph and alerts to open pull requests for patched versions",
+          "isCorrect": true
+        },
+        {
+          "text": "Dependabot scans GitHub Issues and automatically proposes fixes",
+          "isCorrect": false
+        },
+        {
+          "text": "Dependabot compares the codebase against the GitHub Trending list to decide updates",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Dependabot leverages the dependency graph and alerts to open pull requests for patched versions"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 66,
+      "question": "During a code deployment, an IT engineer accidentally pushed sensitive data into a public GitHub repository. What is the first action that should be taken to minimize risk?",
+      "options": [
+        {
+          "text": "Immediately revoke any exposed credentials",
+          "isCorrect": true
+        },
+        {
+          "text": "Perform a force push to remove the sensitive data from the commit history",
+          "isCorrect": false
+        },
+        {
+          "text": "Create an issue in the repository to notify users",
+          "isCorrect": false
+        },
+        {
+          "text": "Delete the repository from GitHub",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Immediately revoke any exposed credentials"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 67,
+      "question": "An IT security team is reviewing howsecret scanning works in private repositories on GitHub Enterprise Cloud. They want to know what extra capability this feature provides to strengthen protection against internal data leaks. Which option explains this capability?",
+      "options": [
+        {
+          "text": "Allow costom pattern definitions for internal secret formats",
+          "isCorrect": true
+        },
+        {
+          "text": "Disables any code that contains a secrets",
+          "isCorrect": false
+        },
+        {
+          "text": "Rewrites history to remove secrets",
+          "isCorrect": false
+        },
+        {
+          "text": "Revokes GitHub access tokens automatically",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Allow costom pattern definitions for internal secret formats"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 68,
+      "question": "An enterprise administrator is tasked with enforcing a policy around forking private and internal repositories across the organization. At the enterprise level, which THREE configuration choices are available to enforce this policy?",
+      "options": [
+        {
+          "text": "Permit organization owners to manage the setting at the organization level",
+          "isCorrect": true
+        },
+        {
+          "text": "Permit all users with access to private and internal repositories to fork them",
+          "isCorrect": false
+        },
+        {
+          "text": "Restict repository owners from managing the setting at the repository level",
+          "isCorrect": true
+        },
+        {
+          "text": "Restrict forking of private and internal repositories entirely",
+          "isCorrect": true
+        }
+      ],
+      "answers": [
+        "Permit organization owners to manage the setting at the organization level",
+        "Restict repository owners from managing the setting at the repository level",
+        "Restrict forking of private and internal repositories entirely"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 69,
+      "question": "An IT audit team is reviewing the Git activity audit log in GitHub Enterprise Cloud to ensure compliance tracking. They want to know which Git operation is not captured in the audit log. Which option reflects the missing operations?",
+      "options": [
+        {
+          "text": "Delete branch",
+          "isCorrect": true
+        },
+        {
+          "text": "Fetch",
+          "isCorrect": false
+        },
+        {
+          "text": "Push",
+          "isCorrect": false
+        },
+        {
+          "text": "Clone",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Delete branch"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 70,
+      "question": "A software engineering team is evaluating the benefits of GitHub Advances Security for their enterprise projects. They want to understand how this feature supports their development process. Which option best describes the benefit?",
+      "options": [
+        {
+          "text": "Assists organization administrators in analyzing and configuring permissions with least privilege access",
+          "isCorrect": false
+        },
+        {
+          "text": "Assists developers in improving and maintaining both the security and quality of their code",
+          "isCorrect": true
+        },
+        {
+          "text": "Assists enterprise administrator in enhancing and maintaining network security for GitHub Enterprise Server instances",
+          "isCorrect": false
+        },
+        {
+          "text": "Assists organization administrator in managing security tokens across the environment",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Assists developers in improving and maintaining both the security and quality of their code"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 71,
+      "question": "An enterprise IT administrator manages multiple organization within GitHub Enterprise",
+      "options": [
+        {
+          "text": "Add outside collaborators to every repository",
+          "isCorrect": false
+        },
+        {
+          "text": "Create organization-specific teams with custom policies",
+          "isCorrect": false
+        },
+        {
+          "text": "Use enterprise-level teams that inherit enterprise policies",
+          "isCorrect": true
+        },
+        {
+          "text": "Assign admin permissions to all team members",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Use enterprise-level teams that inherit enterprise policies"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 72,
+      "question": "An IT department has subscribed to GitHub Premium Support. The operations team need to raise ticket and wants to know what kind of assistance Premium Support can provide. Which option reflects the correct area of support?",
+      "options": [
+        {
+          "text": "Writing scripts",
+          "isCorrect": false
+        },
+        {
+          "text": "Installing GitHub Enterprise Server",
+          "isCorrect": true
+        },
+        {
+          "text": "Setting up hardware",
+          "isCorrect": false
+        },
+        {
+          "text": "Integrating with third-party applications",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Installing GitHub Enterprise Server"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 73,
+      "question": "A software engineering team in a financial enterprise relies on Dependabot to keep dependencies secure. They want to understand how Dependabot decides which security update pull requests to open. What process does Dependabot follow?",
+      "options": [
+        {
+          "text": "Dependabot waits until all CVEs are manually triaged before opening a pull request.",
+          "isCorrect": false
+        },
+        {
+          "text": "Dependabot leverage the dependency graph and alerts to open pull requests for patched versions",
+          "isCorrect": true
+        },
+        {
+          "text": "Dependabot scan GitHub Issues and automatically proposes fixes",
+          "isCorrect": false
+        },
+        {
+          "text": "Dependabot compares the codebase against the GitHub Trending list to decide updates",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Dependabot leverage the dependency graph and alerts to open pull requests for patched versions"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 74,
+      "question": "An enterprise IT administrator manages multiple organizations within GitHub Enterprise Cloud. To ensure consistent security policies across all team, which feature should be used?",
+      "options": [
+        {
+          "text": "Add outside collaborators to every repository",
+          "isCorrect": false
+        },
+        {
+          "text": "Create organization specific teams with custom policies",
+          "isCorrect": false
+        },
+        {
+          "text": "User enterprise-level teams that inherit enterprise policies",
+          "isCorrect": true
+        },
+        {
+          "text": "Assign admin permissions to all team members.",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "User enterprise-level teams that inherit enterprise policies"
+      ],
+      "explanation": ""
+    },
+    {
+      "id": 75,
+      "question": "In a GitHub organization, which permission level is specifically designed to manage organization-wide settings, billing, and member roles, and should be granted with the most caution?",
+      "options": [
+        {
+          "text": "Member",
+          "isCorrect": false
+        },
+        {
+          "text": "Billing Manager",
+          "isCorrect": false
+        },
+        {
+          "text": "Owner",
+          "isCorrect": true
+        },
+        {
+          "text": "Outside Collaborator",
+          "isCorrect": false
+        }
+      ],
+      "answers": [
+        "Owner"
+      ],
+      "explanation": ""
     }
   ]
 }
