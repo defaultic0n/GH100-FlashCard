@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GH-100 Study App</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--sf:#161b22;--sf2:#21262d;--bd:#30363d;--ac:#58a6ff;--ac2:#3fb950;--ac3:#f78166;--ac4:#d2a8ff;--ac5:#ffa657;--tx:#e6edf3;--tx2:#8b949e;--tx3:#c9d1d9;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+.nav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--bd);padding:0 16px;display:flex;align-items:center;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-logo{font-family:'Space Mono',monospace;font-size:13px;color:var(--ac);white-space:nowrap;margin-right:16px;padding:14px 0;flex-shrink:0}
+.nb{background:none;border:none;color:var(--tx2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:14px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;flex-shrink:0}
+.nb.active{color:var(--ac);border-bottom-color:var(--ac)}
+.nb:hover{color:var(--tx)}
+.section{display:none;padding:20px 16px 80px;max-width:680px;margin:0 auto;animation:fi .3s ease}
+.section.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* HOME */
+.hero{text-align:center;padding:28px 0 20px}
+.hero h1{font-family:'Space Mono',monospace;font-size:clamp(20px,5vw,30px);line-height:1.3}
+.hero h1 span{color:var(--ac)}
+.hero p{color:var(--tx2);font-size:13px;margin-top:8px;line-height:1.6}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.badge{background:var(--sf2);border:1px solid var(--bd);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--tx2)}
+.badge span{color:var(--ac5);font-weight:600}
+/* PROGRESS DASHBOARD */
+.dash-title{font-family:'Space Mono',monospace;font-size:16px;margin-bottom:14px}
+.dash-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px;text-align:center}
+.stat-num{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;line-height:1}
+.stat-lbl{font-size:11px;color:var(--tx2);margin-top:5px;letter-spacing:.5px}
+.domain-bars{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.dbar-row{margin-bottom:12px}
+.dbar-row:last-child{margin-bottom:0}
+.dbar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:13px}
+.dbar-name{color:var(--tx3)}
+.dbar-stat{font-family:'Space Mono',monospace;font-size:11px;color:var(--tx2)}
+.dbar-bg{background:var(--sf2);border-radius:4px;height:7px;overflow:hidden}
+.dbar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.missed-section{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.missed-title{font-size:12px;font-family:'Space Mono',monospace;color:var(--tx2);letter-spacing:1px;margin-bottom:12px}
+.missed-tag{display:inline-block;background:var(--sf2);border:1px solid var(--bd);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--tx3);margin:3px}
+.btn-redo{width:100%;background:var(--ac3);color:#0d1117;border:none;border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;margin-top:10px}
+.btn-redo:hover{opacity:.85}
+.btn-redo:disabled{opacity:.35;cursor:not-allowed}
+.btn-reset{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--tx2);cursor:pointer;transition:all .2s;margin-top:8px;width:100%}
+.btn-reset:hover{border-color:var(--ac3);color:var(--ac3)}
+/* STUDY */
+.dc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+.dh{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none}
+.dd{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dtitle{font-weight:600;font-size:15px;flex:1}
+.dpct{font-family:'Space Mono',monospace;font-size:12px;color:var(--tx2)}
+.dchev{color:var(--tx2);font-size:12px;transition:transform .2s}
+.dc.open .dchev{transform:rotate(180deg)}
+.dbody{display:none;padding:0 16px 16px}
+.dc.open .dbody{display:block}
+.ti{padding:8px 0;border-top:1px solid var(--bd);font-size:13px;color:var(--tx3);line-height:1.5;display:flex;gap:8px}
+.ti::before{content:'→';color:var(--tx2);flex-shrink:0;margin-top:1px}
+.kc{background:var(--sf2);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:13px;color:var(--tx3);line-height:1.6;border-left:3px solid}
+/* FLASHCARDS */
+.fft{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:14px;scrollbar-width:none}
+.fft::-webkit-scrollbar{display:none}
+.fb{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--tx2);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all .2s;flex-shrink:0}
+.fb.active{background:var(--ac);border-color:var(--ac);color:#0d1117;font-weight:600}
+.fc-meta{display:flex;justify-content:space-between;margin-bottom:14px;font-size:13px;color:var(--tx2)}
+.cs{perspective:1000px;height:230px;margin-bottom:18px;cursor:pointer}
+.c3{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.cs.flipped .c3{transform:rotateY(180deg)}
+.cf{position:absolute;inset:0;backface-visibility:hidden;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 18px;text-align:center}
+.cb{transform:rotateY(180deg);background:var(--sf2)}
+.clbl{font-size:10px;font-family:'Space Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px}
+.cf .clbl{color:var(--ac)}.cb .clbl{color:var(--ac2)}
+.cq{font-size:14px;font-weight:600;color:var(--tx);line-height:1.5;overflow-y:auto;max-height:155px}
+.ca{font-size:13px;color:var(--tx3);line-height:1.6;overflow-y:auto;max-height:155px}
+.ctag{position:absolute;top:10px;right:10px;font-size:10px;padding:2px 8px;border-radius:10px;font-family:'Space Mono',monospace}
+.tap-hint{text-align:center;font-size:12px;color:var(--tx2);margin-bottom:14px}
+.fc-nav{display:flex;align-items:center;justify-content:center;gap:14px}
+.fn{background:var(--sf);border:1px solid var(--bd);border-radius:10px;color:var(--tx);padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.fn:hover{background:var(--sf2);border-color:var(--ac)}
+.fn:disabled{opacity:.3;cursor:not-allowed}
+.fcount{font-family:'Space Mono',monospace;font-size:13px;color:var(--tx2);min-width:55px;text-align:center}
+/* QUIZ */
+.qfr{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
+.qfr::-webkit-scrollbar{display:none}
+.qfb{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--tx2);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all .2s;flex-shrink:0}
+.qfb.active{background:var(--ac);border-color:var(--ac);color:#0d1117;font-weight:600}
+.qfb.redo-mode{background:var(--ac3);border-color:var(--ac3);color:#0d1117}
+.qprog{margin-bottom:18px}
+.qpbg{background:var(--sf2);border-radius:4px;height:6px;overflow:hidden}
+.qpfill{height:100%;background:linear-gradient(90deg,var(--ac),var(--ac4));border-radius:4px;transition:width .4s ease}
+.qptxt{display:flex;justify-content:space-between;font-size:12px;color:var(--tx2);margin-top:5px}
+.qdtag{font-size:11px;font-family:'Space Mono',monospace;color:var(--tx2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase}
+.qq{font-size:15px;font-weight:600;color:var(--tx);line-height:1.6;margin-bottom:18px}
+.qopts{display:flex;flex-direction:column;gap:9px}
+.qo{background:var(--sf);border:1.5px solid var(--bd);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--tx3);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .2s;line-height:1.5;display:flex;align-items:flex-start;gap:10px}
+.qo:hover:not(:disabled){border-color:var(--ac);color:var(--tx)}
+.qo.correct{background:rgba(63,185,80,.1);border-color:var(--ac2);color:var(--ac2)}
+.qo.wrong{background:rgba(247,129,102,.1);border-color:var(--ac3);color:var(--ac3)}
+.qo.reveal{background:rgba(63,185,80,.05);border-color:var(--ac2)}
+.qo:disabled{cursor:default}
+.ol{font-family:'Space Mono',monospace;font-size:12px;flex-shrink:0;margin-top:1px;font-weight:700}
+.mhint{font-size:11px;color:var(--ac5);font-style:italic;margin-bottom:10px}
+.qexp{background:var(--sf2);border-radius:10px;padding:13px;margin-top:14px;font-size:13px;color:var(--tx3);line-height:1.6;border-left:3px solid var(--ac);display:none}
+.qexp.show{display:block}
+.qnext{width:100%;margin-top:14px;background:var(--ac);color:#0d1117;border:none;border-radius:10px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;display:none}
+.qnext.show{display:block}
+.qnext:hover{opacity:.85}
+.qsub{width:100%;margin-top:14px;background:var(--sf2);color:var(--tx);border:1.5px solid var(--ac);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:none}
+.qsub.show{display:block}
+.qsub:hover{background:var(--ac);color:#0d1117}
+/* RESULT */
+.qres{text-align:center;padding:28px 0;animation:fi .4s ease}
+.rc{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-family:'Space Mono',monospace;font-size:26px;font-weight:700;border:3px solid}
+.rlbl{font-size:20px;font-weight:700;margin-bottom:6px}
+.rsub{font-size:13px;color:var(--tx2);margin-bottom:20px}
+.rbk{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px;text-align:left;margin-bottom:18px}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.rrow:last-child{border-bottom:none}
+.rbtn-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.rbtn{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:11px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--tx);cursor:pointer;transition:all .2s}
+.rbtn:hover{border-color:var(--ac);color:var(--ac)}
+.rbtn.danger:hover{border-color:var(--ac3);color:var(--ac3)}
+/* SECTION TITLE */
+.stitle{font-family:'Space Mono',monospace;font-size:17px;color:var(--tx);margin-bottom:5px}
+.ssub{font-size:13px;color:var(--tx2);margin-bottom:18px}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
+@media(max-width:380px){.qq{font-size:14px}.qo{font-size:12px}.fn{padding:9px 12px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-logo">GH-100</div>
+  <button class="nb active" onclick="showSec('home',this)">🏠 Home</button>
+  <button class="nb" onclick="showSec('read',this)">📖 Study</button>
+  <button class="nb" onclick="showSec('flashcard',this)">🃏 Cards</button>
+  <button class="nb" onclick="showSec('quiz',this)">🧠 Quiz</button>
+  <button class="nb" onclick="showSec('progress',this)">📊 Progress</button>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="section active">
+  <div class="hero">
+    <h1>GitHub<br><span>Administration</span><br>GH-100</h1>
+    <p>Your mobile study companion to pass the GitHub Administration certification exam.</p>
+    <div class="badge-row">
+      <div class="badge">⏱ <span>100 min</span> exam</div>
+      <div class="badge">📋 <span>7</span> domains</div>
+      <div class="badge">🃏 <span>37</span> flashcards</div>
+      <div class="badge">❓ <span>130+</span> quiz questions</div>
+    </div>
+  </div>
+  <div style="display:grid;gap:12px;margin-top:6px">
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px">
+      <div style="font-size:12px;font-family:'Space Mono',monospace;color:var(--ac);margin-bottom:10px;letter-spacing:1px">DOMAIN WEIGHTS</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--tx2)">Identities & Auth</span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf2);border-radius:3px;overflow:hidden"><div style="width:20%;height:100%;background:#58a6ff;border-radius:3px"></div></div><span style="color:var(--ac);font-family:'Space Mono',monospace;font-size:11px">20%</span></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--tx2)">Access & Permissions</span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf2);border-radius:3px;overflow:hidden"><div style="width:20%;height:100%;background:#d2a8ff;border-radius:3px"></div></div><span style="color:var(--ac4);font-family:'Space Mono',monospace;font-size:11px">20%</span></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--tx2)">GitHub Actions</span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf2);border-radius:3px;overflow:hidden"><div style="width:20%;height:100%;background:#3fb950;border-radius:3px"></div></div><span style="color:var(--ac2);font-family:'Space Mono',monospace;font-size:11px">20%</span></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--tx2)">User Support</span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf2);border-radius:3px;overflow:hidden"><div style="width:15%;height:100%;background:#ffa657;border-radius:3px"></div></div><span style="color:var(--ac5);font-family:'Space Mono',monospace;font-size:11px">15%</span></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--tx2)">Security & Compliance</span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf2);border-radius:3px;overflow:hidden"><div style="width:15%;height:100%;background:#f78166;border-radius:3px"></div></div><span style="color:var(--ac3);font-family:'Space Mono',monospace;font-size:11px">15%</span></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--tx2)">Deployment & Licensing</span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf2);border-radius:3px;overflow:hidden"><div style="width:5%;height:100%;background:#8b949e;border-radius:3px"></div></div><span style="color:var(--tx2);font-family:'Space Mono',monospace;font-size:11px">5%</span></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--tx2)">GitHub Packages</span><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:5px;background:var(--sf2);border-radius:3px;overflow:hidden"><div style="width:5%;height:100%;background:#8b949e;border-radius:3px"></div></div><span style="color:var(--tx2);font-family:'Space Mono',monospace;font-size:11px">5%</span></div></div>
+      </div>
+    </div>
+    <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px">
+      <div style="font-size:12px;font-family:'Space Mono',monospace;color:var(--ac2);margin-bottom:8px;letter-spacing:1px">QUICK TIPS</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--tx3);line-height:1.6">
+        <div>✅ Focus on <strong style="color:var(--tx)">SAML SSO, SCIM</strong> and <strong style="color:var(--tx)">Team Sync</strong></div>
+        <div>✅ Know <strong style="color:var(--tx)">GHES vs GHEC vs GHAE</strong></div>
+        <div>✅ <strong style="color:var(--tx)">Enterprise policy</strong> always overrides org policy</div>
+        <div>✅ <strong style="color:var(--tx)">First step</strong> for exposed secrets = revoke immediately</div>
+        <div>✅ <strong style="color:var(--tx)">GitHub App Installation Token</strong> = best for CI/CD automation</div>
+        <div>✅ Check <strong style="color:var(--tx)">📊 Progress</strong> to find your weak domains</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STUDY -->
+<div id="read" class="section">
+  <div class="stitle">Study Notes</div>
+  <div class="ssub">Tap each domain to expand key concepts</div>
+  <div class="dc" id="d1"><div class="dh" onclick="toggleD('d1')"><div class="dd" style="background:#ffa657"></div><div class="dtitle">D1: User Support & Workflows</div><div class="dpct">15%</div><div class="dchev">▼</div></div>
+  <div class="dbody">
+    <div class="ti">Admins handle config, access, integrations. GitHub Support handles billing, bugs, outages, and GHES installation.</div>
+    <div class="ti"><strong>GitHub Premium Support</strong> covers: security incidents, GHES installation, outages. Does NOT cover: writing scripts, hardware setup, third-party integrations.</div>
+    <div class="ti">Support priorities: <strong>Urgent</strong> = critical system failure. <strong>High</strong> = security business impact. <strong>Normal</strong> = general questions.</div>
+    <div class="ti">Generate support bundles via <code style="background:var(--sf2);padding:1px 5px;border-radius:4px;font-size:11px">ghe-support-bundle</code> over SSH (requires admin SSH access).</div>
+    <div class="ti"><strong>GitHub App vs Action:</strong> Apps = independent services with webhooks, fine-grained permissions, respond to events across multiple repos. Actions = CI/CD steps inside a single workflow.</div>
+    <div class="ti">Branch protection: require PR reviews, status checks, signed commits, linear history. "Include administrators" forces rules on admins too.</div>
+    <div class="kc" style="border-color:#ffa657">💡 CODEOWNERS file = auto-request specific reviewers for their files. "Dismiss stale approvals" = new commits reset existing approvals.</div>
+  </div></div>
+  <div class="dc" id="d2"><div class="dh" onclick="toggleD('d2')"><div class="dd" style="background:#58a6ff"></div><div class="dtitle">D2: Identities & Authentication</div><div class="dpct">20%</div><div class="dchev">▼</div></div>
+  <div class="dbody">
+    <div class="ti"><strong>SAML SSO:</strong> Delegates authentication to IdP. Enterprise-wide = single IdP across all orgs (overrides per-org). Per-org = each org can have its own IdP.</div>
+    <div class="ti"><strong>SCIM:</strong> Automates user provisioning (create), attribute sync (update), deprovisioning (delete). Supported: Azure AD, Okta, custom.</div>
+    <div class="ti"><strong>Team Sync:</strong> Maps IdP groups → GitHub teams. Requires SAML SSO first. Works with Azure AD and Okta.</div>
+    <div class="ti"><strong>SCIM vs Team Sync:</strong> SCIM = account lifecycle (create/update/deactivate). Team Sync = team membership only. Both complement each other.</div>
+    <div class="ti"><strong>EMU:</strong> Accounts created + managed by enterprise IdP. Cannot own personal repos, join outside orgs, modify own profiles.</div>
+    <div class="ti"><strong>Non-partner IdP:</strong> Requires manual entry of SAML 2.0 details (Sign-on URL, Issuer, X.509 cert). Partner IdPs (Azure AD, Okta) have pre-configured integrations.</div>
+    <div class="ti"><strong>2FA:</strong> TOTP apps support cloud backup of codes. Members without 2FA are removed when org enforces it.</div>
+    <div class="kc" style="border-color:#58a6ff">💡 SAML = Authentication (who?). SCIM = Provisioning (create/update/delete). Team Sync = Team membership. Employee leaves → SCIM auto-deprovisions.</div>
+  </div></div>
+  <div class="dc" id="d3"><div class="dh" onclick="toggleD('d3')"><div class="dd" style="background:#8b949e"></div><div class="dtitle">D3: Deployment & Licensing</div><div class="dpct">5%</div><div class="dchev">▼</div></div>
+  <div class="dbody">
+    <div class="ti"><strong>GHEC:</strong> SaaS, GitHub-managed, multi-tenant. SAML SSO, audit log streaming, enterprise policies. Requires internet.</div>
+    <div class="ti"><strong>GHES:</strong> Self-hosted on your infrastructure. Full data control, you manage upgrades/backups. Best for data sovereignty.</div>
+    <div class="ti"><strong>GHAE:</strong> Single-tenant, managed by GitHub in isolated cloud environment. Strict compliance. No longer sold to new customers.</div>
+    <div class="ti"><strong>GitHub Connect:</strong> Links GHES to GitHub.com. Enables GitHub-hosted runners on GHES, license syncing.</div>
+    <div class="ti"><strong>Actions pricing:</strong> Linux = 1×, Windows = 2×, macOS = 10×. GitHub Discussions engagement is NOT metered.</div>
+    <div class="ti">License = per unique user across all orgs. EMU metered billing = total users including dormant.</div>
+    <div class="kc" style="border-color:#8b949e">💡 GHES = you manage everything. GHEC = GitHub manages. GHAE = GitHub manages in isolated instance.</div>
+  </div></div>
+  <div class="dc" id="d4"><div class="dh" onclick="toggleD('d4')"><div class="dd" style="background:#d2a8ff"></div><div class="dtitle">D4: Access & Permissions</div><div class="dpct">20%</div><div class="dchev">▼</div></div>
+  <div class="dbody">
+    <div class="ti"><strong>Org Roles:</strong> Owner (full control), Member (per defaults), Billing Manager (billing only), Outside Collaborator (specific repos, not org member).</div>
+    <div class="ti"><strong>Repo Roles:</strong> Read → Triage → Write → Maintain → Admin. Triage = manage issues/PRs (no push). Maintain = settings (no deletion). Admin = full.</div>
+    <div class="ti"><strong>Team Maintainer:</strong> Add/remove team members, manage nested sub-teams. Cannot change org-wide settings.</div>
+    <div class="ti"><strong>Rulesets:</strong> Multiple rulesets on same branch = all evaluated, combined rules enforced. Org-level rulesets can target many repos by name pattern.</div>
+    <div class="ti"><strong>Custom Repo Roles:</strong> Pick specific permissions — e.g., "Manage Settings" without "Delete Repository".</div>
+    <div class="ti"><strong>Enterprise policy:</strong> Mandatory across all orgs. Org policies operate within what enterprise allows.</div>
+    <div class="kc" style="border-color:#d2a8ff">💡 Audit token usage: audit log shows token ID + requesting IP + associated user. Audit access: Repo Settings → Manage Access.</div>
+  </div></div>
+  <div class="dc" id="d5"><div class="dh" onclick="toggleD('d5')"><div class="dd" style="background:#f78166"></div><div class="dtitle">D5: Security & Compliance</div><div class="dpct">15%</div><div class="dchev">▼</div></div>
+  <div class="dbody">
+    <div class="ti"><strong>Secret scanning:</strong> Public repos → alerts partner providers (AWS, Stripe) to revoke. Private repos on GHEC → also supports custom pattern definitions.</div>
+    <div class="ti"><strong>Push Protection:</strong> Blocks a push before it lands if a secret pattern is detected.</div>
+    <div class="ti"><strong>CodeQL:</strong> Treats code as queryable database with QL language. Finds semantic vulnerabilities, not just patterns.</div>
+    <div class="ti"><strong>Dependabot:</strong> Dep Graph → Security Alerts → Security Updates (auto-opens PRs). For transitive deps: updates the direct dep to a version that resolves it.</div>
+    <div class="ti"><strong>Exposed secrets — order:</strong> 1) Revoke/rotate immediately. 2) Clean history (filter-branch/BFG). 3) Contact GitHub Support for cache purge.</div>
+    <div class="ti"><strong>Token types:</strong> Classic PAT (broad), Fine-grained PAT (scoped to repos), GitHub App Installation Token (short-lived, best for automation), GITHUB_TOKEN (auto, expires after job).</div>
+    <div class="ti"><strong>GraphQL Audit Log events:</strong> Permission changes, promoting users to admins, GitHub App permission changes. NOT: pushes, clones (those are Git events).</div>
+    <div class="ti"><strong>Audit Log Streaming:</strong> Real-time delivery to Splunk/Azure Sentinel/SIEM for long-term retention.</div>
+    <div class="kc" style="border-color:#f78166">💡 GHAS = paid add-on for private repos in Enterprise. FREE for public repos. Includes: code scanning, secret scanning, dependency review.</div>
+  </div></div>
+  <div class="dc" id="d6"><div class="dh" onclick="toggleD('d6')"><div class="dd" style="background:#3fb950"></div><div class="dtitle">D6: GitHub Actions</div><div class="dpct">20%</div><div class="dchev">▼</div></div>
+  <div class="dbody">
+    <div class="ti"><strong>GitHub-hosted runners:</strong> Managed, ephemeral, auto-scaled. Standard runners share IPs. Larger runners with static IPs = dedicated, not shared with other tenants.</div>
+    <div class="ti"><strong>Self-hosted runners:</strong> Custom hardware, private network access. Unique feature: pre/post-job scripts (runner hooks). Risk on public repos: fork PRs can run code on your runner.</div>
+    <div class="ti"><strong>Runner groups:</strong> Control which repos access specific runners. Configure in runner group settings (not Actions Policies).</div>
+    <div class="ti"><strong>Secrets scope:</strong> Repository → Environment → Organization → Enterprise. Not passed to fork-triggered workflows by default.</div>
+    <div class="ti"><strong>Reusable workflows:</strong> Use <code style="background:var(--sf2);padding:1px 4px;border-radius:3px;font-size:11px">workflow_call</code> trigger. Called with <code style="background:var(--sf2);padding:1px 4px;border-radius:3px;font-size:11px">uses: org/repo/.github/workflows/file.yml@ref</code>.</div>
+    <div class="ti"><strong>OIDC:</strong> Short-lived tokens for cloud providers (AWS/Azure). Eliminates long-lived secrets.</div>
+    <div class="ti">Jobs without <code style="background:var(--sf2);padding:1px 4px;border-radius:3px;font-size:11px">needs</code> run in parallel. <code style="background:var(--sf2);padding:1px 4px;border-radius:3px;font-size:11px">concurrency</code> = prevent simultaneous runs.</div>
+    <div class="kc" style="border-color:#3fb950">💡 Squash merge = all commits into one. "Require linear history" = prevents merge commits. Environment secrets = same variable name, different values per env (Production vs Staging).</div>
+  </div></div>
+  <div class="dc" id="d7"><div class="dh" onclick="toggleD('d7')"><div class="dd" style="background:#8b949e"></div><div class="dtitle">D7: GitHub Packages</div><div class="dpct">5%</div><div class="dchev">▼</div></div>
+  <div class="dbody">
+    <div class="ti">Supported registries: npm, RubyGems, Maven, Gradle, Docker/GHCR, NuGet.</div>
+    <div class="ti">In Actions workflows: use GITHUB_TOKEN to authenticate. From local dev: use a Personal Access Token + username.</div>
+    <div class="ti"><strong>Packages vs Releases:</strong> Packages = versioned artifacts in a registry (consumed as dependencies). Releases = Git tag + notes + binaries (human-facing). Do NOT use Packages to share code between methods within the same app.</div>
+    <div class="kc" style="border-color:#8b949e">💡 Packages storage and Actions minutes used to build/push packages both count toward billing.</div>
+  </div></div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="flashcard" class="section">
+  <div class="stitle">Flashcards</div>
+  <div class="ssub">Tap a card to reveal the answer</div>
+  <div class="fft" id="fcFilter"></div>
+  <div class="fc-meta"><span id="fcDomainLabel">All Domains</span><span id="fcTotal"></span></div>
+  <p class="tap-hint">👆 Tap the card to flip</p>
+  <div class="cs" id="cardScene" onclick="flipCard()">
+    <div class="c3" id="card3d">
+      <div class="cf"><div class="clbl">Question</div><div class="cq" id="cardQ"></div><div class="ctag" id="cardTagF" style="background:rgba(88,166,255,.15);color:var(--ac)"></div></div>
+      <div class="cf cb"><div class="clbl">Answer</div><div class="ca" id="cardA"></div><div class="ctag" id="cardTagB" style="background:rgba(63,185,80,.15);color:var(--ac2)"></div></div>
+    </div>
+  </div>
+  <div class="fc-nav">
+    <button class="fn" id="fcPrev" onclick="changeCard(-1)">← Prev</button>
+    <span class="fcount" id="fcCount">1 / 1</span>
+    <button class="fn" id="fcNext" onclick="changeCard(1)">Next →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="section">
+  <div id="quizContent">
+    <div class="stitle">Practice Quiz</div>
+    <div class="ssub" id="quizSub">130+ exam-style questions</div>
+    <div class="qfr" id="quizFilterRow"></div>
+    <div class="qprog">
+      <div class="qpbg"><div class="qpfill" id="progressBar" style="width:0%"></div></div>
+      <div class="qptxt"><span id="qNum">Question 1</span><span id="qScore">Score: 0</span></div>
+    </div>
+    <div class="qdtag" id="qDomain"></div>
+    <div class="qq" id="qText"></div>
+    <div class="mhint" id="multiHint"></div>
+    <div class="qopts" id="qOpts"></div>
+    <button class="qsub" id="qSubBtn" onclick="submitMulti()">Submit Answer</button>
+    <div class="qexp" id="qExp"></div>
+    <button class="qnext" id="qNextBtn" onclick="nextQ()">Next Question →</button>
+  </div>
+  <div id="quizResult" style="display:none"></div>
+</div>
+
+<!-- PROGRESS -->
+<div id="progress" class="section">
+  <div class="stitle">My Progress</div>
+  <div class="ssub">Tracks all quiz attempts across sessions</div>
+  <div class="dash-grid" id="statsGrid"></div>
+  <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:12px">
+    <div style="font-size:12px;font-family:'Space Mono',monospace;color:var(--ac);margin-bottom:12px;letter-spacing:1px">ACCURACY BY DOMAIN</div>
+    <div id="domainBars"></div>
+  </div>
+  <div class="missed-section" id="missedSection">
+    <div class="missed-title">QUESTIONS MISSED</div>
+    <div id="missedList"></div>
+    <button class="btn-redo" id="redoBtn" onclick="startRedo()">Redo Missed Questions</button>
+  </div>
+  <button class="btn-reset" onclick="confirmReset()">Reset all progress data</button>
+</div>
+
+<script>
+// ========== DATA ==========
+const FC=[
+  {d:'D1',q:'What are valid reasons to contact GitHub Premium Support?',a:'1) Security issues with business impact (High priority). 2) Outages on GitHub.com affecting core Git functionality (Urgent). NOT covered: writing scripts, hardware setup, third-party integrations.'},
+  {d:'D1',q:'What do you need to generate a support bundle on GHES?',a:'Administrator SSH access to the appliance. Command: ssh -p 122 admin@hostname -- \'ghe-support-bundle -o\' > support-bundle.tgz'},
+  {d:'D1',q:'What is the difference between a GitHub App and a GitHub Action?',a:'App = independent service with its own identity, webhooks, fine-grained permissions, responds to events across multiple repos. Action = CI/CD step inside a single workflow. Apps are installed; Actions are referenced in YAML.'},
+  {d:'D1',q:'Name 3 things branch protection rules can enforce.',a:'1) Require PR review approvals. 2) Require passing status checks. 3) Require signed commits. 4) Require linear history (prevents merge commits). 5) "Include administrators" forces admins to follow rules too.'},
+  {d:'D1',q:'What does "dismiss stale pull request approvals" do?',a:'When new commits are pushed to a PR, existing approvals are reset. Reviewers must re-approve after new changes are made.'},
+  {d:'D2',q:'SAML SSO vs enterprise-wide SAML SSO — what is the difference?',a:'Per-org SAML: each org can have its own IdP. Enterprise-wide: single IdP enforced across all orgs, overrides per-org settings. All users must authenticate through the same provider.'},
+  {d:'D2',q:'What are the 3 SCIM capabilities?',a:'1) Automates user provisioning when added in IdP. 2) Syncs user attribute changes from IdP to GitHub. 3) Deactivates GitHub accounts when users are deleted from IdP.'},
+  {d:'D2',q:'SCIM vs Team Sync — key difference?',a:'SCIM = manages user account lifecycle (create/update/deactivate). Team Sync = maps IdP groups to GitHub teams (membership only). SCIM is broader; both can work together.'},
+  {d:'D2',q:'What distinguishes Enterprise Managed Users (EMUs)?',a:'Accounts provisioned/managed by enterprise IdP. Users cannot own personal repos, join outside orgs, modify own profiles. Owned entirely by the enterprise.'},
+  {d:'D2',q:'Partner vs Non-partner IdP for EMU — what is different?',a:'Partner IdPs (Azure AD, Okta) have pre-configured GitHub app integrations. Non-partner IdPs require manual entry: Sign-on URL, Issuer, X.509 certificate.'},
+  {d:'D3',q:'Key differences between GHES and GHEC?',a:'GHES: self-hosted, you manage upgrades/backups/data, no internet required, full data control. GHEC: GitHub-managed, auto-updates, requires internet, multi-tenant.'},
+  {d:'D3',q:'What is GitHub Connect and when is it used?',a:'Links GHES to GitHub.com. Enables: GitHub-hosted runners for GHES workflows, license syncing, and accessing github.com features from GHES.'},
+  {d:'D3',q:'GitHub Actions pricing multipliers by OS?',a:'Linux = 1× (baseline). Windows = 2×. macOS = 10×. GitHub Discussions engagement is NOT metered.'},
+  {d:'D4',q:'List all organization-level roles and their key capabilities.',a:'Owner: full control, billing, members. Member: access per org settings. Billing Manager: billing only, no code access. Outside Collaborator: specific repos only, not org member.'},
+  {d:'D4',q:'What are the 5 repository roles in order?',a:'Read → Triage → Write → Maintain → Admin. Triage = manage issues/PRs (no push). Maintain = settings (no deletion). Admin = full including deletion.'},
+  {d:'D4',q:'What can a Team Maintainer do?',a:'Add/remove team members and manage nested sub-teams. Cannot change org-wide settings or delete repositories.'},
+  {d:'D4',q:'How do multiple rulesets on the same branch work?',a:'All applicable rulesets are evaluated. Their combined (most restrictive) rules are enforced simultaneously. Rulesets do not cancel each other out.'},
+  {d:'D4',q:'What is a Custom Repository Role used for?',a:'Allows picking specific permission combinations not in standard roles. E.g., grant "Manage Settings" without "Delete Repository". For fine-grained access control.'},
+  {d:'D5',q:'What are the 3 Dependabot features?',a:'1) Dependency Graph: visualizes all deps including transitive. 2) Security Alerts: notifies on vulnerable deps. 3) Security Updates: auto-opens PRs. For transitive deps: updates the direct dep that resolves the issue.'},
+  {d:'D5',q:'Exposed secret in a public repo — correct order?',a:'1) Revoke/rotate the credential immediately (in AWS, Stripe, etc.). 2) Clean repo history with git filter-branch or BFG. 3) Contact GitHub Support to purge cached copies.'},
+  {d:'D5',q:'Secret scanning vs push protection — difference?',a:'Secret scanning: scans existing repo content and alerts. Push protection: actively blocks a push before it lands if a known secret pattern is detected.'},
+  {d:'D5',q:'What is CodeQL and how does it differ?',a:'Treats code as a queryable database using QL language to express semantic security checks. Understands code logic and data flow — not just pattern matching.'},
+  {d:'D5',q:'What does GitHub Advanced Security (GHAS) include?',a:'Code scanning (CodeQL), secret scanning, dependency review. FREE for public repos. Requires paid GHAS license for private repos in Enterprise accounts.'},
+  {d:'D5',q:'What audit log events does the GraphQL API expose?',a:'Changes in permissions, promoting users to admins, changes to GitHub App permissions. NOT: pushes to repos, cloning (those are Git activity events, not audit events).'},
+  {d:'D6',q:'What is unique to self-hosted runners vs GitHub-hosted?',a:'Can run custom pre/post-job scripts (runner hooks). Can access private/internal networks and custom hardware (e.g., GPUs). You manage updates and maintenance.'},
+  {d:'D6',q:'When do you need GitHub-hosted larger runners with static IPs?',a:'When the security team requires runner IPs not shared with other companies/tenants. Standard runners share dynamic IPs; larger runners with static IPs provide dedicated, non-shared ranges.'},
+  {d:'D6',q:'How should you restrict runner access to specific repos in a runner group?',a:'Configure repository access in the runner group settings — switch from "All repositories" to "Selected repositories". Done in runner group settings, NOT in Actions Policies.'},
+  {d:'D6',q:'What are the scopes of encrypted secrets?',a:'Repository → Environment → Organization → Enterprise (narrow to broad). Org secrets can be scoped to selected repos. Secrets not passed to fork-triggered workflows by default.'},
+  {d:'D6',q:'What is a reusable workflow and how is it triggered?',a:'Uses workflow_call trigger to be called by other workflows. Referenced with: uses: org/repo/.github/workflows/file.yml@ref. Pass data via inputs and secrets keywords.'},
+  {d:'D6',q:'What is OIDC in GitHub Actions?',a:'OpenID Connect — workflows authenticate with cloud providers (AWS, Azure) using short-lived tokens. Eliminates long-lived secrets/credentials stored in GitHub.'},
+  {d:'D7',q:'Supported GitHub Packages registries?',a:'npm (JS), RubyGems (Ruby), Maven + Gradle (Java), Docker/OCI via GHCR, NuGet (.NET).'},
+  {d:'D7',q:'Packages vs Releases — key difference?',a:'Packages = versioned artifacts in a registry (npm, Docker), consumed as dependencies. Releases = Git tag + notes + binary assets, human-facing. Do NOT use Packages for sharing code between methods within the same app.'},
+  {d:'D7',q:'How to authenticate to GitHub Packages from local dev?',a:'Use a Personal Access Token (PAT) with your GitHub username. In GitHub Actions workflows, use the automatically available GITHUB_TOKEN instead.'},
+];
+
+const QS=[
+  {d:'D2',q:'Your company uses Okta as its IdP. Which GitHub feature should you configure to automatically add/remove users from GitHub teams when their group membership changes in Okta?',o:['SAML SSO enforcement','SCIM provisioning','Team synchronization','OAuth App integration'],a:[2],e:'Team Sync maps IdP groups to GitHub teams. When a user is added/removed in Okta, GitHub team membership updates automatically. SCIM handles account creation/deletion, not team assignment.'},
+  {d:'D2',q:'An administrator enables SAML SSO for an organization. What happens to existing members who have not linked their GitHub account to the IdP?',o:['They are immediately removed','They retain access until SAML is enforced','They must re-authenticate at next login only','They are converted to outside collaborators'],a:[1],e:'When SAML is enabled but not enforced, existing members retain access. Only when SAML is enforced are unlinked users removed.'},
+  {d:'D4',q:'A developer needs to merge PRs and manage CI/CD settings for a repository, but should not be able to delete the repository or manage webhooks. Which role is most appropriate?',o:['Write','Maintain','Admin','Triage'],a:[1],e:'Maintain allows managing issues, PRs, and some repo settings including CI/CD, but does NOT allow deleting the repo or managing webhooks.'},
+  {d:'D6',q:'Your organization uses GitHub-hosted runners and has IP allow lists enabled. Workflows are failing. What is the most likely cause?',o:['GitHub-hosted runners are not supported with enterprise accounts','The GITHUB_TOKEN lacks permissions','GitHub-hosted runners have dynamic IPs not in the allow list','Self-hosted runners must be used instead'],a:[2],e:'GitHub-hosted runners use dynamic, rotating IP addresses. If your org has IP allow lists enabled, these runner IPs must be added, or you must use the meta API to retrieve and allow the IP ranges.'},
+  {d:'D5',q:'A developer accidentally commits an AWS access key to a public repository. What should be done FIRST?',o:['Run git filter-branch to remove it from history','Contact GitHub Support to purge caches','Immediately rotate/revoke the AWS access key','Delete and recreate the repository'],a:[2],e:'First priority is to revoke the exposed credential immediately — it may already have been scraped. Then clean repo history, then contact GitHub Support for cache purge.'},
+  {d:'D3',q:'A company requires that their source code never leave their own data centers. Which GitHub deployment option should they choose?',o:['GitHub Enterprise Cloud (GHEC)','GitHub Enterprise Server (GHES)','GitHub AE','GitHub Free with private repos'],a:[1],e:'GitHub Enterprise Server (GHES) is self-hosted on the company\'s own infrastructure. The company controls the data, networking, and where it physically resides.'},
+  {d:'D1',q:'Which of the following is a key difference between a GitHub App and an OAuth App?',o:['GitHub Apps can only be installed by org owners','OAuth Apps act as users; GitHub Apps act as their own identity with fine-grained permissions','GitHub Apps cannot access organization resources','OAuth Apps support webhooks but GitHub Apps do not'],a:[1],e:'GitHub Apps authenticate as themselves with fine-grained, repository-level permissions and short-lived tokens. OAuth Apps authenticate as a user, with broad scopes and persistent tokens.'},
+  {d:'D6',q:'Which is a valid concern about enabling self-hosted runners for a public repository?',o:['Self-hosted runners cannot run on Linux','GitHub charges extra for self-hosted runners','Forked PR workflows can execute arbitrary code on your runner','Self-hosted runners cannot use encrypted secrets'],a:[2],e:'In public repos, a malicious actor can fork and open a PR. If workflows trigger on pull_request from forks, they can modify workflow files to run arbitrary code on your self-hosted runner.'},
+  {d:'D5',q:'What is the primary advantage of using a GitHub App over a PAT for machine/bot automation?',o:['GitHub Apps are easier to create than PATs','GitHub Apps provide fine-grained permissions and are not tied to a user account','PATs expire automatically but GitHub Apps do not','GitHub Apps can access more API endpoints than PATs'],a:[1],e:'GitHub Apps have installation tokens that are short-lived, have fine-grained permissions, and are not tied to any user account. If a user leaves, PAT-based automation breaks; GitHub Apps persist.'},
+  {d:'D2',q:'What is the primary purpose of SCIM in a GitHub Enterprise setup?',o:['To enforce two-factor authentication on all users','To automate user account provisioning and deprovisioning based on IdP changes','To synchronize team membership with IdP groups','To configure SAML SSO for enterprise organizations'],a:[1],e:'SCIM automates the creation, updating, and deletion of user accounts in GitHub when changes occur in the Identity Provider. This prevents orphaned accounts when employees leave.'},
+  {d:'D4',q:'An organization wants all developers to have read access to all repositories by default. What should the base permission be set to?',o:['None','Read','Write','Admin'],a:[1],e:'Setting base permissions to Read gives all org members read access. Specific teams can then be granted Write or higher. This follows least-privilege.'},
+  {d:'D6',q:'A reusable workflow needs to be called from multiple repositories. How should it be referenced?',o:['uses: ./github/workflows/reusable.yml','uses: org/repo/.github/workflows/reusable.yml@main','import: org/workflows/reusable@v1','trigger: workflow_call from org/repo'],a:[1],e:'Reusable workflows are referenced with the full path: uses: org/repo/.github/workflows/file.yml@ref. The local ./ syntax only works within the same repository.'},
+  {d:'D5',q:'Which GitHub security feature would you use to find and alert on vulnerable npm packages?',o:['Code scanning (CodeQL)','Secret scanning','Dependabot security alerts','Audit log'],a:[2],e:'Dependabot security alerts scan your dependency manifest files (package.json) and cross-reference with the GitHub Advisory Database to alert you on vulnerable dependencies.'},
+  {d:'D3',q:'In GitHub Enterprise, how are user licenses counted when a user belongs to multiple organizations?',o:['Each org membership counts as a separate license','Users are counted once per enterprise regardless of org count','Only the primary org counts for licensing','Outside collaborators always count as full licenses'],a:[1],e:'GitHub Enterprise licensing is per unique user across the entire enterprise. A user in 5 organizations still consumes 1 seat license.'},
+  {d:'D1',q:'An admin needs to audit which GitHub Actions are being used across the enterprise. What is the best approach?',o:['Check each repository manually','Generate a support bundle and search the logs','Use the GitHub REST or GraphQL APIs to query enterprise metrics and audit logs','Export the audit log as CSV from enterprise settings'],a:[2],e:'GitHub REST and GraphQL APIs allow programmatic querying of audit logs, action usage, active repos, and team metrics across the enterprise.'},
+  {d:'D4',q:'What is the difference between an organization member and an outside collaborator?',o:['Outside collaborators have more permissions','Members access only public repos; outside collaborators access private repos','Members are part of the org and subject to org policies; outside collaborators have repo-specific access only','There is no functional difference'],a:[2],e:'Org members belong to the organization and are subject to org-wide policies (SAML, 2FA). Outside collaborators are added only to specific repos and are not org members.'},
+  {d:'D6',q:'Your enterprise needs to ensure only approved, centrally-maintained actions can be used in all workflows. What is the best way to enforce this?',o:['Create a policy requiring all repos to use the same workflow file','Use runner groups to restrict action execution','Configure GitHub Actions permissions to allow only selected actions from specified sources','Disable GitHub Actions for all repos except a central template repo'],a:[2],e:'Enterprise and org admins can configure Actions permissions to allow only actions from GitHub itself, verified creators, or specific approved repositories.'},
+  {d:'D5',q:'A company wants to ensure all developers have their accounts managed by the company and cannot create personal accounts. Which feature achieves this?',o:['SAML SSO enforcement','Two-factor authentication requirement','Enterprise Managed Users (EMU)','SCIM provisioning with Okta'],a:[2],e:'EMU means all user accounts are created and controlled by the enterprise IdP via SCIM. Users cannot sign up for personal GitHub accounts.'},
+  {d:'D2',q:'What is required before Team Sync can be enabled for a GitHub organization?',o:['SCIM must be configured first','SAML SSO must be enabled and the IdP must support Team Sync','All team members must have 2FA enabled','The organization must be on an Enterprise plan only'],a:[1],e:'Team Sync requires SAML SSO to be enabled first, since it relies on the SAML IdP identity to link GitHub teams to IdP groups.'},
+  {d:'D7',q:'A team wants to publish a Docker image to GitHub Packages in their CI/CD pipeline. Which authentication approach should they use?',o:['Create a PAT with packages:write scope','Use the GITHUB_TOKEN that is automatically available','Create a GitHub App and use its installation token','Use SSH keys to authenticate to the package registry'],a:[1],e:'The GITHUB_TOKEN is automatically provided in every workflow run and has permissions to publish packages to GitHub Container Registry for the current repository.'},
+  {d:'D3',q:'Which GitHub Enterprise option is "fully managed by GitHub, but runs in a dedicated, isolated instance for a single customer"?',o:['GitHub Enterprise Cloud (GHEC)','GitHub Enterprise Server (GHES)','GitHub AE (Advanced Enterprise)','GitHub Enterprise with data residency'],a:[2],e:'GitHub AE was a single-tenant, fully managed instance operated by GitHub. Unlike GHES (self-hosted) and GHEC (multi-tenant), it provided isolation without self-hosting burden.'},
+  {d:'D1',q:'GitHub Actions are not triggering on push events — a webhook delivery failure. Who should resolve this?',o:['The repository admin should check branch protection rules','The organization admin should regenerate the webhook secret','GitHub Support should be contacted as this may be a platform issue','The developer should re-push with a different commit message'],a:[1],e:'Organization owners and repository admins can view webhook delivery logs, redeliver failed webhooks, and regenerate webhook secrets.'},
+  {d:'D6',q:'What happens to encrypted secrets when a workflow is triggered from a forked repository via a pull_request event?',o:['All org secrets are available','Repository secrets are available but org secrets are not','Secrets are not passed to workflows triggered by forks by default','Secrets are only available if the fork owner is an org member'],a:[2],e:'By default, workflows from forks do not have access to encrypted secrets. This prevents malicious PRs from stealing secrets.'},
+  {d:'D4',q:'A repository team member can view and comment on issues but cannot push code or merge PRs. Which role do they have?',o:['Read','Triage','Write','Outside Collaborator'],a:[1],e:'Triage role allows managing issues and pull requests (label, assign, comment, close) without code write access.'},
+  {d:'D5',q:'Which audit log feature allows an enterprise to monitor and investigate a suspicious deletion of a repository?',o:['Dependabot alerts','Code scanning results','Audit log API (REST or GraphQL)','Repository traffic insights'],a:[2],e:'The GitHub Audit Log records all significant actions including repository deletions, with actor, timestamp, and IP address.'},
+  {d:'D2',q:'When SAML SSO is enabled for an organization, what does a member need to do to authorize a Personal Access Token?',o:['Regenerate the PAT with SSO scopes enabled','Authorize the existing PAT for the SSO organization via GitHub settings','Create a new GitHub App instead of using PATs','Request admin approval for each API call'],a:[1],e:'When SAML SSO is enabled, existing PATs must be explicitly authorized for the organization via the token\'s Configure SSO → Authorize setting.'},
+  {d:'D6',q:'A self-hosted runner stops receiving jobs after network configuration changes. What should an admin check first?',o:['Re-register the runner with a new token','Check if the runner application can reach api.github.com','Increase the runner\'s CPU and memory allocation','Reinstall the GitHub Actions runner application'],a:[1],e:'Self-hosted runners communicate outbound to GitHub. After network changes, verify the runner machine can reach api.github.com on HTTPS (port 443).'},
+  {d:'D4',q:'A company wants teams in different business units to manage their own repos, but with a single enterprise billing account. What structure should they use?',o:['One large organization with strict team permissions','Multiple organizations within a single enterprise account','Separate GitHub accounts per business unit','One organization with custom roles per team'],a:[1],e:'Multiple organizations within a single enterprise account provide isolation between business units while keeping unified billing and enterprise policies.'},
+  {d:'D5',q:'Which token type provides the most security for GitHub App automation?',o:['Personal Access Token (classic)','Fine-grained PAT','GitHub App Installation Token','OAuth access token'],a:[2],e:'GitHub App Installation Tokens are generated on-demand, expire in 1 hour, and can be scoped to specific repositories. Most secure option — limited blast radius if exposed.'},
+  {d:'D1',q:'An enterprise wants to standardize CI/CD across all teams. Developers should use pre-approved workflow templates for new repositories. What feature supports this?',o:['Reusable workflows only','Workflow starter templates stored in the .github repository of the org','Branch protection rules with required status checks','GitHub Marketplace CI/CD apps'],a:[1],e:'Organizations can create a .github repository with a workflow-templates/ directory. These templates appear in the "Actions" tab when developers set up new workflows.'},
+  {d:'D3',q:'A GHES administrator needs to understand which features are underutilized and which teams are most active. What is the best approach?',o:['Review each repository manually','Use the GHES Management Console dashboard','Query the GitHub REST/GraphQL APIs or use Admin Center insights','Contact GitHub Support for a usage report'],a:[2],e:'GHES provides admin APIs and the Admin Center with usage dashboards. REST/GraphQL APIs can be queried programmatically to generate custom reports on feature adoption and team activity.'},
+  {d:'D1',q:'You need to contact GitHub Premium Support. What are valid reasons? (Choose two)',o:['License renewal','Hardware setup issues or errors','Business impact from security issues within your organization','Outages on GitHub.com affecting core Git functionality'],a:[2,3],e:'Business-impact security issues = High priority ticket. Outages on GitHub.com = Urgent priority. License renewal and hardware setup are not covered by Premium Support.'},
+  {d:'D2',q:'Which THREE accurately describe how SCIM enhances user management in GitHub Enterprise Cloud? (Choose three)',o:['SCIM synchronizes changes to user attributes from the IdP to GitHub','SCIM deactivates GitHub accounts when users are deleted from the IdP','SCIM automatically deletes organization repositories when admins are removed','SCIM automates user provisioning when new users are added to the IdP','SCIM generates authentication tokens for accessing GitHub\'s REST API'],a:[0,1,3],e:'SCIM: 1) Syncs attribute changes from IdP to GitHub. 2) Deactivates accounts on removal from IdP. 3) Provisions new accounts when added to IdP. It does NOT delete repos or generate API tokens.'},
+  {d:'D2',q:'When comparing a partner IdP integration with a non-partner solution for GitHub EMU, which statement is correct?',o:['Non-partner IdP integrations can utilize OIDC for authentication','Non-partner IdP integrations require manual configuration of SAML 2.0 details','Partner IdP integrations support fewer GitHub-supported authentication methods','Partner IdP integrations rely on the partner to support the application on their IdP'],a:[1],e:'Non-partner IdPs require you to manually enter SAML 2.0 configuration details: Sign-on URL, Issuer, and X.509 certificate. Partner IdPs have pre-configured integrations.'},
+  {d:'D5',q:'How is CodeQL different from other static analysis tools?',o:['It removes insecure code automatically','It allows querying of code semantics using a database-like language','It only works for open-source projects','It runs analysis only after a security breach'],a:[1],e:'CodeQL ingests your code into a queryable database and lets you write QL queries to express semantic checks and find patterns across the codebase.'},
+  {d:'D5',q:'What is the key benefit of using a GitHub security advisory within a repository?',o:['It automatically reverts commits that introduced the vulnerability','It allows maintainers to privately disclose, discuss, and publish vulnerabilities','It flags all forks of the repository as vulnerable','It prevents users from cloning the repository until issues are resolved'],a:[1],e:'GitHub security advisories let maintainers privately disclose, discuss fixes, and then publish vulnerabilities in a controlled manner within the repository.'},
+  {d:'D3',q:'Which product\'s usage is NOT included in GitHub Enterprise Cloud\'s monthly metered billing report?',o:['Git LFS bandwidth','GitHub Actions minutes','GitHub Discussions engagement','GitHub Packages storage'],a:[2],e:'GitHub Discussions engagement isn\'t a metered product and doesn\'t appear in the Product billing list.'},
+  {d:'D5',q:'Which GitHub token type supports fine-grained repository permissions AND is recommended for CI/CD automation?',o:['Personal Access Tokens (PATs)','GitHub App Installation Access Tokens','Device Tokens','OAuth tokens'],a:[1],e:'GitHub App Installation Access Tokens are scoped to exact permissions you grant the App — down to individual repositories — and rotate automatically.'},
+  {d:'D1',q:'Why would a GitHub App be favored over a machine account for automation tasks?',o:['Machine accounts are required for webhook delivery','GitHub Apps provide a higher rate limit ceiling than a PAT on a machine account when owned by a GHEC-licensed enterprise','GitHub Apps are limited to a single repository','Machine accounts are easier to audit than GitHub Apps'],a:[1],e:'GitHub Apps authenticate with short-lived installation tokens and, when owned by a GitHub Enterprise Cloud org, enjoy a higher rate limit (15,000 requests/hour).'},
+  {d:'D2',q:'When comparing fine-grained PATs with classic PATs, which statement is accurate?',o:['Fine-grained PATs automatically renew while classic PATs require manual renewal','Fine-grained PATs permissions can be scoped to specific repositories','Classic PATs offer more permission controls than fine-grained PATs','Classic PATs can be restricted to specific organizations, but fine-grained PATs cannot'],a:[1],e:'Fine-grained personal access tokens let you scope permissions down to individual repositories, whereas classic PATs grant access across every repo the user can reach.'},
+  {d:'D4',q:'Which THREE options are available for enterprise-level forking policy for private/internal repos? (Choose three)',o:['Allow organization owners to administer the setting at the organization level','Allow people who have access to private/internal repos to fork them','Allow specific people or teams to fork private and internal repos','Disallow repository owners from administering the setting at the repository level','Disallow forking of private and internal repositories'],a:[0,1,4],e:'Enterprise fork policies: 1) Allow org owners to control forking at org level. 2) Allow all with access to fork. 3) Disallow forking entirely. There is no per-person/team option at enterprise level.'},
+  {d:'D5',q:'What will happen if Dependabot discovers a vulnerable transitive dependency?',o:['It creates a PR to update the direct dependency to a version that resolves the vulnerability','It opens a PR to update the affected package directly regardless of version compatibility','It automatically removes the package from the repository','It sends an email to the repository owner but does not alter code'],a:[0],e:'Dependabot opens a PR that updates the direct dependency to a version which, in turn, resolves the vulnerable transitive dependency.'},
+  {d:'D6',q:'Security team requires runners use IP ranges not shared with other companies. Which approach meets this?',o:['GitHub-hosted larger runners with Azure private networking','GitHub-hosted standard runners, using IP addresses from "actions" at api.github.com/meta','GitHub-hosted standard runners, using IP addresses from "api" at api.github.com/meta','GitHub-hosted larger runners with static IP addresses'],a:[3],e:'GitHub\'s larger runners let you reserve dedicated static IP addresses — so you can allow-list those IPs and be sure they aren\'t shared with any other tenant.'},
+  {d:'D2',q:'Which correctly distinguishes enterprise-wide SAML SSO from organization-level SAML SSO?',o:['Enterprise-wide SAML SSO requires less initial admin overhead','Enterprise-wide SAML SSO allows different organizations to use different authentication methods','Enterprise-wide SAML SSO immediately removes users who fail to authenticate via IdP','Enterprise-wide SAML SSO ensures users authenticate through the same IdP across all organizations'],a:[3],e:'Enterprise-wide SAML SSO enforces a single IdP across all member organizations — its configuration overrides any per-organization SAML settings.'},
+  {d:'D6',q:'What is the effect of enforcing a policy that restricts GitHub Actions to only those created by the enterprise?',o:['Marketplace actions are allowed only with SSO enabled','Actions can only be triggered by organization members','Only actions created within the enterprise are allowed','All public actions are allowed'],a:[2],e:'When you restrict Actions to only enterprise-created ones, no external or Marketplace actions can be used.'},
+  {d:'D5',q:'What additional capability does secret scanning offer for private repos on GitHub Enterprise Cloud?',o:['Allows custom pattern definitions for internal secret formats','Disables any code that contains a secret','Rewrites history to remove secrets','Revokes GitHub access token automatically'],a:[0],e:'Secret scanning in private repos on GHEC lets you define custom regex patterns to detect internal or proprietary secret formats beyond the default partner-provided types.'},
+  {d:'D5',q:'What benefit does GitHub Advanced Security provide?',o:['Helps enterprise admins improve network security for GHES instances','Helps developers improve and maintain the security and quality of code','Helps org admins analyze and configure permissions to least privilege','Helps org admins manage security tokens'],a:[1],e:'GHAS equips developers with built-in code scanning (CodeQL), secret scanning, dependency review, and other AppSec tools.'},
+  {d:'D6',q:'An organization wants to share a single API key for their Actions workflows but restrict its use to only a subset of repositories. Where should they configure the secret to minimize maintenance?',o:['Repository secrets','Environment secrets','Organization secrets','Development environment secrets'],a:[2],e:'By defining the API key as an organization secret, you centralize management and can grant access only to the subset of repositories you choose.'},
+  {d:'D4',q:'Which correctly describes the difference between controlling actions at enterprise vs organization level in GitHub?',o:['Enterprise and org policies are independent, with org policies taking precedence','Enterprise policies configure mandatory settings for organizations','Enterprise policies apply only to public repositories','Enterprise policies can block specific actions while org policies can only enable/disable entirely'],a:[1],e:'Enterprise policies let you define and enforce mandatory settings across all member organizations. Org-level policies operate within the options the enterprise policies expose.'},
+  {d:'D1',q:'You need GitHub to automatically notify a third-party service any time a new repository is created, without writing custom code. Which Marketplace tool do you need?',o:['GitHub App','GitHub Copilot Extension','GitHub Models','GitHub Action'],a:[0],e:'Marketplace integrations that listen for events like "repository created" and send notifications are delivered as GitHub Apps, since they can subscribe to org-level webhooks without custom code.'},
+  {d:'D5',q:'What is the purpose of the .github/dependabot.yml file?',o:['It configures scheduling, package ecosystems, and target directories for update checks','It lists commit SHAs to exclude from automatic pull requests','It enables GitHub to scan for secrets in dependency files','It encrypts dependency versions before storing them in the repo'],a:[0],e:'The .github/dependabot.yml file defines Dependabot\'s package-ecosystem, directories to inspect, and update schedule (daily/weekly/monthly).'},
+  {d:'D4',q:'When a user becomes a member of multiple GitHub organizations, which THREE are important considerations? (Choose three)',o:['The user will automatically have the same role across all organizations','The user will need to authorize credentials separately for each SAML-enabled organization','The user\'s profile information becomes private to non-organization members','The user\'s personal repositories will become accessible to all organizations','The user\'s repository access and team membership needs to be managed separately for each organization','The user will have different permission levels in each organization'],a:[1,4,5],e:'Multi-org members: 1) Must authorize SAML credentials per org. 2) Access and team membership is independent per org. 3) Permission levels vary per org.'},
+  {d:'D5',q:'What is the first step when sensitive data is accidentally pushed to a public GitHub repository?',o:['Revoke any exposed credentials immediately','Force push a commit removing the data','Open an issue to inform users','Delete the repository'],a:[0],e:'Revoke and/or rotate the exposed credentials immediately so they can no longer be used — this is the critical first step before any history-rewriting or cleanup.'},
+  {d:'D4',q:'Why would someone configure a SECURITY.md file?',o:['To communicate corporate security policies for end users on a private repository','To provide information for open source collaborators and researchers that may need to report security findings to maintainers securely','To prevent anyone from pushing to the repository without approval','To define which open source packages are permitted for use'],a:[1],e:'A SECURITY.md file lets maintainers provide clear instructions for collaborators and external researchers on how to privately report and disclose security vulnerabilities.'},
+  {d:'D4',q:'Which is a benefit of creating a new GitHub organization?',o:['Automatic inheritance of policies from other organizations','Reduced administrative overhead','Clear separation of repositories, projects, teams, billing, and organization-specific policies','Simplified collaboration across all organizations'],a:[2],e:'Organizations provide a dedicated container for shared work, isolating repositories, projects, teams, billing settings, and policy configurations.'},
+  {d:'D5',q:'How does Dependabot determine which security update PRs to open?',o:['It waits for manual triage of all CVEs','It uses the dependency graph and Dependabot alerts to open PRs for patched versions','It reads GitHub Issues and automatically suggests fixes','It compares your codebase to the GitHub Trending list'],a:[1],e:'Dependabot relies on the Dependency Graph and Dependabot Alerts to identify vulnerable dependencies, then automatically opens PRs to update to patched versions.'},
+  {d:'D2',q:'When comparing Group SCIM to Team Sync for identity management, which statement is correct?',o:['Group SCIM requires less initial configuration than Team Sync','Team Sync supports more identity providers than Group SCIM','Team Sync provides more automated user deprovisioning than Group SCIM','Group SCIM enables centralized user and group management through the IdP'],a:[3],e:'Group SCIM lets you manage both user accounts and group memberships centrally in your IdP. Team Sync only mirrors IdP group membership into existing GitHub teams.'},
+  {d:'D2',q:'Which THREE statements accurately describe EMU accounts? (Choose three)',o:['EMU accounts can be used for both personal and enterprise repositories','EMU accounts are managed through an identity provider such as Azure AD','EMU accounts allow users to create and manage their own credentials','EMU accounts restrict users to enterprise-related activities only','EMU accounts are created and managed by individual users','EMU accounts are owned by the organization and cannot be unlinked'],a:[1,3,5],e:'EMU accounts: 1) Provisioned/authenticated through IdP exclusively. 2) Cannot create public content or interact outside the enterprise. 3) Owned and controlled by the enterprise — cannot be unlinked as personal accounts.'},
+  {d:'D3',q:'What is a key characteristic of GHES compared to GHEC?',o:['GHES is hosted by GitHub and offers automatic scaling','GHES offers data residency in regions GHEC does not support','GHES allows enterprises to have complete control over their hosting environment, including data storage and network security policies','GHES users cannot integrate with external identity providers'],a:[2],e:'GHES allows enterprises to have complete control over their hosting environment, including data storage location, network security policies, upgrade timing, and backup procedures.'},
+  {d:'D4',q:'Which of the following is true about outside collaborators in a GitHub organization?',o:['They are granted explicit access to specific repositories','They inherit organization-wide policies such as SSO requirements','They have access to all private repositories by default','They appear in the organization\'s internal member list'],a:[0],e:'Outside collaborators aren\'t organization members; they are granted explicit access at read, write, or admin level to only the repositories you choose.'},
+  {d:'D4',q:'Which THREE are responsibilities of an Organization Owner? (Choose three)',o:['View and manage organization billing information','Create repositories without approval from other members','Manage organization settings such as configuration and default permissions','Access repositories only if explicitly granted by a team maintainer'],a:[0,1,2],e:'Org owners can: 1) View and edit billing. 2) Create repos without approval. 3) Have full administrative control over org settings including default permissions.'},
+  {d:'D4',q:'Which TWO are responsibilities of a Team Maintainer? (Choose two)',o:['Modifying organization-wide settings','Managing nested sub-teams','Adding or removing team members','Deleting repositories assigned to the team'],a:[1,2],e:'Team maintainers can manage nested sub-teams and add/remove members from their team. Cannot change org-wide settings or delete repositories.'},
+  {d:'D4',q:'Which action can a user with Write permissions perform?',o:['Manage repository settings such as labels and GitHub Pages','Push code to non-protected branches','Configure branch protection rules','Delete the repository'],a:[1],e:'Write permission allows pushing commits to non-protected branches without needing administrative rights.'},
+  {d:'D4',q:'Which is a key benefit of setting default read permissions across organizations?',o:['Suits environments where all users need write access','Improves collaboration by allowing users to modify content directly','Increases efficiency in content creation','Enhances security by minimizing unintended modifications'],a:[3],e:'Setting default read permissions follows the least-privilege principle — users can view and clone without accidentally modifying code.'},
+  {d:'D5',q:'A token was used to access an organization\'s resource via API. What fields in the audit log help determine who used it?',o:['The token\'s permissions and the geographic region of access','The token expiration date','The GitHub Actions runner name','The token ID, requesting IP address, and associated user'],a:[3],e:'The audit log records the token\'s hashed ID, the requesting IP address, and the associated user for each API action.'},
+  {d:'D5',q:'Which audit log events are exposed by the GraphQL API? (Choose three)',o:['Changes in permissions','Promoting users to administrators','Pushes to repositories','Changes to permissions of a GitHub App','Cloning of repositories'],a:[0,1,3],e:'GraphQL audit log exposes: permission changes, promoting users to admins, and GitHub App permission changes. NOT: pushes, clones (those are Git events).'},
+  {d:'D5',q:'When a token is used to perform actions across different GitHub resources, how is this reflected in audit logs?',o:['Each API action made with the token generates a separate audit log entry','Only the first repository accessed is recorded','GitHub creates a ZIP archive of all token activity','The audit log stores only the token name'],a:[0],e:'Each API call authenticated with a token generates its own audit-log event, annotated with the token\'s hashed ID, actor, and source IP.'},
+  {d:'D1',q:'Which practice helps avoid service disruption when consuming GitHub APIs at scale?',o:['Designing your application to work within GitHub\'s rate limits','Using multiple tokens to bypass limits','Caching all API responses permanently','Ignoring secondary rate limits'],a:[0],e:'Designing your integration to stay within GitHub\'s documented rate limits — batching requests, using conditional requests, handling 429 responses with back-off, and monitoring X-RateLimit-* headers.'},
+  {d:'D5',q:'How does GitHub handle secrets found via secret scanning in a public repository?',o:['It alerts the service provider (e.g., AWS, Stripe)','It immediately blocks the commit','It deletes the secret from the repository','It notifies administrators via webhook'],a:[0],e:'When secret scanning detects a supported credential in a public repository, GitHub notifies the issuing service provider so they can revoke or rotate the exposed secret.'},
+  {d:'D3',q:'How does metered billing work in GitHub Enterprise Cloud with EMU?',o:['Billing is based on number of total users in the enterprise','Billing is based on owners and members of GitHub organizations','Billing is based on total users that are not dormant','Billing is based on the number of users created in Azure AD'],a:[0],e:'EMU metered billing is based on total users in the enterprise — including dormant users — not just active ones.'},
+  {d:'D4',q:'A team member is unable to push due to a 403 error related to branch protection. What should the admin do first?',o:['Remove the user from the team and re-add them','Check the user\'s permissions and rulesets applied to the branch','Raise a GitHub Support request','Revert the branch to an earlier state'],a:[1],e:'A 403 on branch protection means the user lacks sufficient permissions or a ruleset is blocking. Check the user\'s role, team membership, and which rulesets/branch protection rules apply.'},
+  {d:'D4',q:'A team member asks who has access to a repository and what their permission levels are. Which tool should you use?',o:['GitHub Pages Settings','GitHub Action Logs','Repository Settings > Manage Access','Branch Protection Rules'],a:[2],e:'Use Repository Settings > Manage Access to view all users and teams with access along with their assigned permission levels.'},
+  {d:'D5',q:'What file should you use to create documentation for collaborators that lists supported versions of the project?',o:['SECURITY.md','CONTRIBUTING.md','SUPPORT.md','.gitignore file'],a:[0],e:'SECURITY.md is used to document security-related information including supported versions and how to report vulnerabilities privately.'},
+  {d:'D5',q:'What tool should you use to automate part of your security process?',o:['Add Dependabot to your code base','Add access restrictions to your enterprise','Create security documentation','Add advisories for your users'],a:[0],e:'Dependabot automates dependency updates to address security vulnerabilities.'},
+  {d:'D5',q:'Which two pieces of information should be included in a security advisory?',o:['Product affected and severity','Severity and exposure list','Administrator name and severity','Exposures list and administrator name'],a:[0],e:'A security advisory should include the affected product (what is vulnerable) and the severity level (how critical the issue is).'},
+  {d:'D2',q:'You want everyone signed in to your corporate network to access GitHub without a second sign-in. Which technology would you enable?',o:['Single sign-on','Two-factor authentication','Personal Access Tokens','SSH keys'],a:[0],e:'SAML SSO allows users already authenticated to the corporate network (via IdP) to access GitHub without a separate login.'},
+  {d:'D2',q:'Where does a user authenticate after enabling SAML Single sign-on?',o:['With a GitHub login','With the organization credentials','With the Identity Provider (IdP)','With a two-factor authentication login'],a:[2],e:'After SAML SSO is enabled, users authenticate with the Identity Provider. GitHub then verifies the SAML assertion from the IdP before granting access.'},
+  {d:'D2',q:'What 2FA method supports the secure backup of authentication codes in the cloud?',o:['Time-based One-time Password (TOTP)','Short Message Service (SMS)','Security Key','Phone call'],a:[0],e:'TOTP apps (like Authy or 1Password) support secure cloud backup of authentication codes. SMS, security keys, and phone calls do not.'},
+  {d:'D2',q:'For Microsoft Entra ID team synchronization, what installation permission do you need to configure?',o:['Provide the tenant URL','Read all users\' full profiles','Generate a valid SSWS token','Enable SAML Single Sign-on (SSO)'],a:[1],e:'Reading all users\' full profiles is the permission required when configuring team synchronization with Microsoft Entra ID.'},
+  {d:'D4',q:'You want to grant a user permission to add and remove organization members to and from a team. Which permission should you grant?',o:['The admin permission on a repository','The maintain permission on a repository','Organization billing manager','Team maintainer'],a:[3],e:'Team maintainer permissions specifically allow adding and removing members from a team.'},
+  {d:'D4',q:'What is the purpose of a team in GitHub?',o:['A team allows you to manage an organization account','A team allows you to control permission levels for an enterprise','A team allows a single user to sign in using different accounts','A team reflects company structure, provides cascading access permissions, and enables @mentions to all team members'],a:[3],e:'Teams are used for structuring groups according to company structure. They provide cascading permissions and make it easy to notify all members via @team mentions.'},
+  {d:'D3',q:'What is the best reason to upgrade to the GitHub Enterprise product?',o:['Because you want to use GitHub Actions and Codespaces','Because your VP needs to use GitHub Insights','Because you want to centrally manage users and repositories across multiple organizations','Because you want to use the team pull request reviewers feature'],a:[2],e:'Centralized management of users and repositories across multiple organizations is the key Enterprise value proposition.'},
+  {d:'D3',q:'What is a feature of GitHub Connect?',o:['Sharing data between GitHub Enterprise Server and GitHub Enterprise Cloud','Allowing you to limit sharing of your organization\'s documentation','Authentication with SAML SSO and access provisioning with SCIM','Allows instant messaging between users'],a:[0],e:'GitHub Connect enables sharing data between GHES and GHEC — including enabling GitHub.com Actions on GHES and license usage syncing.'},
+  {d:'D6',q:'What feature can you use to expand the kinds of actions you can automate in response to common GitHub events?',o:['GitHub Actions','GitHub Advanced Security','Dependabot','Code scanning'],a:[0],e:'GitHub Actions is the platform for automating workflows in response to GitHub events (push, PR, release, issue, scheduled, etc.).'},
+  {d:'D6',q:'What actions can you take at enterprise level to manage GitHub Actions in your enterprise instance?',o:['Create workflow templates','Configure a GitHub Actions use policy','Manually sync public actions in Enterprise Cloud','Enable secret scanning'],a:[1],e:'At the enterprise level, you can configure a GitHub Actions use policy — controlling which actions are allowed across all organizations.'},
+  {d:'D6',q:'What actions can you take to configure self-hosted runners for enterprise use?',o:['Create and add custom labels to your runners','Add proxy configurations after runners start','Add the IP address of your runners at repository level','Configure self-hosted runners to automatically update their OS'],a:[0],e:'Adding custom labels to self-hosted runners helps organize and target them in workflow files via runs-on.'},
+  {d:'D6',q:'What are encrypted secrets in GitHub Actions?',o:['Authentication tokens you can generate in account settings','The equivalent of SSH keys in GitHub','Encrypted environment variables you can create to store sensitive information','Public keys used to encrypt data in transit'],a:[2],e:'Encrypted secrets are encrypted environment variables stored securely in GitHub. They are made available to workflows as environment variables at runtime.'},
+  {d:'D1',q:'GitHub support is limited to which of the following issues?',o:['Account, Security, and Abuse issues','Security, server, and 2FA issues','Account, server, and security issues','Account, 2FA, and security issues'],a:[0],e:'GitHub free support covers Account issues, Security issues, and Abuse reports.'},
+  {d:'D1',q:'Which GitHub priority should you use to report critical system failures?',o:['Urgent','High','Normal','Low'],a:[0],e:'\'Urgent\' is the priority for critical system failures where the system is down with no workaround. High is for business-impacting issues with a workaround.'},
+  {d:'D7',q:'When pulling an image from GitHub Packages to your local environment, which credentials are needed?',o:['Your GitHub username and a Personal Access Token','The name of the organization and an API Key','The name of the package and a package key','Your GitHub username and a password'],a:[0],e:'A GitHub username and a PAT (with read:packages scope) are required to pull an image from GitHub Packages locally.'},
+  {d:'D7',q:'How can you authenticate to GitHub Packages from your local development environment?',o:['With an API Key','With my GitHub Credentials (username and password)','With a Personal Access Token','With a GitHub App'],a:[2],e:'Authentication to GitHub Packages from a local dev environment requires a Personal Access Token with the appropriate packages scope.'},
+  {d:'D7',q:'In which scenarios should you NOT use GitHub Packages?',o:['When I want to share code between methods of my application','When I want to share container images among team developers','When I want to publish a small code library as an open-source project','When I want to manage version control for my codebase'],a:[0],e:'GitHub Packages is not appropriate for sharing code between methods within the same application. Packages is for versioned artifacts shared across different projects or teams.'},
+  {d:'D6',q:'Which feature is unique to self-hosted runners (not available on GitHub-hosted runners)?',o:['Execute scripts before and after a job (runner hooks)','Dynamic scaling','Automatic OS updates','GPU support'],a:[0],e:'Self-hosted runners support custom pre- and post-job scripts via runner hooks — not available on GitHub-hosted runners.'},
+  {d:'D6',q:'What needs to be done to ensure only specific repositories can access runners in an organization runner group?',o:['Use GitHub\'s meta API to configure access','Add a label to the runner group','Configure repository access in the runner group settings','Configure the Actions Policies to "Only selected repositories"'],a:[2],e:'In the organization\'s runner group settings, switch from "All repositories" to "Selected repositories" and explicitly choose which repos may use those runners.'},
+  {d:'D5',q:'Which Git operation is NOT included in the Git activity audit log?',o:['Delete branch','Fetch','Push','Clone'],a:[0],e:'Delete branch operations aren\'t tracked as Git-activity events. The Git activity audit log only records clone, fetch, and push.'},
+  {d:'D6',q:'You want to ensure a secret is automatically available ONLY to workflows in internal and private repositories. Where do you configure the required access policy?',o:['Actions policies','Runner groups','Rulesets','Organization secret'],a:[3],e:'Organization secrets have a visibility setting where you can restrict them to "Private and internal repositories only".'},
+  {d:'D1',q:'How does GitHub help enterprises meet compliance requirements?',o:['GitHub provides configurable controls such as an audit log, SAML authentication, and enterprise rulesets','GitHub disables all external collaboration features','GitHub only allows those with admin permissions to write changes to repositories','GitHub automatically encrypts user passwords in plaintext for quick access'],a:[0],e:'GitHub provides: audit log with streaming, SAML SSO, IP allow lists, enterprise rulesets, GHAS features, and SCIM — giving enterprises the controls needed for regulatory compliance.'},
+  {d:'D6',q:'Which of the following are valid ways to pass data to a reusable workflow? (Choose two)',o:['Use environment variables to pass data directly to the reusable workflow','Define inputs in the reusable workflow and pass values from the calling workflow','Define the secrets in the caller repository and call the reusable workflow using the "secrets" keyword','Define the secrets in the reusable workflow\'s repository and reference the secret using the "secrets" context'],a:[1,2],e:'Reusable workflows accept data via: 1) Defined inputs the caller passes values to. 2) Secrets defined in the caller repository and passed using the "secrets" keyword.'},
+  {d:'D4',q:'An admin needs to prevent force-pushing to "main" branch across 50 different repos in a single organization. What is the most efficient way?',o:['Manually enable Branch Protection on each repository','Configure a Repository Ruleset at the Organization level','Set the default repository visibility to Private','Create a GitHub Action to revert force-pushes'],a:[1],e:'Organization-level rulesets allow you to target multiple repositories simultaneously based on naming patterns — far more efficient than configuring each repo individually.'},
+  {d:'D5',q:'Which GitHub feature is designed to block a commit from being pushed if it contains a plaintext API key?',o:['CodeQL Static Analysis','Dependabot Alerts','Branch Protection Rules','Secret Scanning with Push Protection'],a:[3],e:'Push protection intercepts the push attempt and blocks it if a supported secret pattern is detected — before the secret ever reaches the repository.'},
+  {d:'D6',q:'A team requires a GitHub Actions runner that can access a database in their restricted on-premises network. Which runner type should you recommend?',o:['GitHub-hosted Ubuntu runner','Standard Runner Group','Self-hosted runner','GitHub-hosted Windows runner'],a:[2],e:'Self-hosted runners are installed on your own infrastructure, allowing them to access local resources, private networks, and internal databases.'},
+  {d:'D6',q:'You want to ensure only the "DevOps" team can use a specific set of high-performance self-hosted runners. How should you configure this?',o:['Add the "DevOps" team as Repository Admins','Assign a "DevOps" label to the runners','Place the runners in a Runner Group and restrict access to the "DevOps" team\'s repositories','Hardcode the runner name in the workflow YAML file'],a:[2],e:'Runner groups are the primary mechanism for controlling which organizations or teams have access to specific runners.'},
+  {d:'D4',q:'A user needs to view billing information and manage seats for the Enterprise account but should not have access to any repository code. Which role is most appropriate?',o:['Billing Manager','Enterprise Owner','Maintainer','Organization Owner'],a:[0],e:'Billing Manager can manage financial settings and seats without being granted access to organization content or code.'},
+  {d:'D5',q:'Where can an administrator find a record of every time a user\'s permissions were changed across the entire Enterprise?',o:['The Insights dashboard','The Git Commit History','The Enterprise Audit Log','The Security Tab of a repository'],a:[2],e:'The Enterprise Audit Log tracks all administrative actions across all organizations within the enterprise account.'},
+  {d:'D2',q:'What is the primary benefit of using GitHub Enterprise Managed Users (EMU)?',o:['It removes the need for an Identity Provider (IdP)','The enterprise maintains full control over the accounts, and users cannot modify their own profiles','It allows users to use their personal GitHub accounts for work','It makes all repositories public by default'],a:[1],e:'EMUs provide the highest level of administrative control — account details are strictly dictated by the enterprise\'s IdP, users cannot modify their profiles.'},
+  {d:'D6',q:'Which GitHub feature should you use to share a standardized CI/CD workflow template across all repositories in your organization?',o:['Git Submodules','Organization Secrets','Reusable Workflows','Personal Access Tokens'],a:[2],e:'Reusable workflows allow you to define a workflow once and call it from many other workflow files, ensuring CI/CD consistency.'},
+  {d:'D6',q:'Your GHES is using GitHub Actions and you want GitHub to manage the runner infrastructure. What must you configure?',o:['Repository-level Webhooks','The GitHub CLI on the server','A local SSH tunnel to a personal laptop','GitHub Connect with GitHub-hosted runners'],a:[3],e:'GitHub Connect allows GHES to communicate with GitHub.com, enabling the use of cloud-hosted runners for your on-premises instance.'},
+  {d:'D6',q:'An enterprise wants to authenticate GitHub Actions with AWS without using long-lived cloud credentials. Which feature should the administrator configure?',o:['GitHub App with Private Key','Self-hosted Runners with IAM Roles','Personal Access Tokens (Fine-grained)','OpenID Connect (OIDC) with trust relationship'],a:[3],e:'OIDC allows GitHub Actions to receive a short-lived token from cloud providers (AWS, Azure) by establishing a trust relationship. Eliminates the need for storing permanent secrets.'},
+  {d:'D5',q:'Which GitHub Enterprise feature allows an administrator to stream audit logs to an external provider like Splunk or Azure Sentinel?',o:['GitHub Connect','JSON Export utility','Webhooks for Enterprise','Audit Log Streaming'],a:[3],e:'Audit Log Streaming enables real-time delivery of audit events to third-party SIEM tools like Splunk or Azure Sentinel for long-term retention.'},
+  {d:'D4',q:'A developer needs to manage repository settings but should not be able to delete the repository. What is the best way to achieve this?',o:['Create a Custom Repository Role','Assign the "Admin" role and use a Ruleset','Assign the "Maintain" role','Make the user an Organization Owner'],a:[0],e:'Custom Repository Roles allow picking specific permissions such as "Manage Settings" while excluding "Delete Repository".'},
+  {d:'D2',q:'In a GitHub EMU setup, where must user account information be updated to reflect a change in a user\'s last name?',o:['In the GitHub User Profile settings','In the Identity Provider (IdP)','In the Enterprise Account settings','Via the GitHub Support portal'],a:[1],e:'In an EMU environment, the IdP is the source of truth. Changes to user attributes are pushed to GitHub via SCIM.'},
+  {d:'D5',q:'You want all repositories in your organization to automatically have vulnerability patterns detected in their code. Which feature should you enable globally?',o:['Secret Scanning','Dependabot security updates','CodeQL analysis via Code Scanning','Branch Protection Rules'],a:[2],e:'CodeQL is GitHub\'s semantic analysis engine that identifies security vulnerability patterns. Enabling Code Scanning globally via Default Setup applies CodeQL to all repos automatically.'},
+  {d:'D6',q:'An administrator wants to limit the number of parallel jobs running simultaneously. Where is this configured?',o:['Runner Group settings in UI','The config.sh script on the runner','Workflow file "concurrency" key','Organization Billing Settings'],a:[2],e:'The "concurrency" keyword in YAML ensures that only one job or workflow using the same concurrency group runs at a time.'},
+  {d:'D5',q:'Which of the following is required to use GitHub Advanced Security (GHAS) features on a private repository?',o:['A GitHub Pro personal account','The repository must be Public','A valid GHAS license for the Enterprise','An SSH key for every developer'],a:[2],e:'GHAS is a paid add-on for private repos in Enterprise accounts. It is free for public repositories. A valid GHAS license must be applied to the enterprise.'},
+  {d:'D6',q:'When configuring a Reusable Workflow, which keyword is used in the "child" workflow to allow it to be called by other workflows?',o:['repository_dispatch','workflow_run','on:push','workflow_call'],a:[3],e:'The "workflow_call" trigger defines that a workflow is intended to be used as a reusable component by other "caller" workflows.'},
+  {d:'D2',q:'An administrator needs to ensure all members of an organization have 2FA enabled. Where is this enforced?',o:['Organization Authentication settings','Repository Rulesets','The .github/CONTRIBUTING.md file','SAML SSO configuration'],a:[0],e:'Administrators can require 2FA at the organization or enterprise level in Organization Authentication settings. Members without it are removed.'},
+  {d:'D2',q:'What happens to a user\'s access when they are removed from the Identity Provider in a SCIM-enabled GitHub Enterprise?',o:['The user becomes an "outside collaborator"','The administrator must manually delete the user from GitHub','The user is automatically deprovisioned and loses access immediately','The user retains access until their session expires'],a:[2],e:'SCIM synchronizes state — when the IdP signals a user is removed, GitHub immediately revokes their access and deprovisions their account.'},
+  {d:'D6',q:'What is the primary purpose of "Environment Secrets" in GitHub Actions?',o:['To encrypt the source code of the repository','To hide the names of the developers from the audit log','To provide different secret values for "Production" vs "Staging" using the same variable name','To store large binary files used in CI'],a:[2],e:'Environments allow you to scope secrets so that "API_KEY" can have a different value depending on which deployment environment the job is targeting.'},
+  {d:'D6',q:'An administrator needs to restrict which Actions can be used in the Enterprise. They want to allow only Actions created by GitHub and verified partners. Where is this set?',o:['Enterprise Policies > Actions settings','The IdP (Identity Provider) settings','Individual repository .gitignore files','The README.md of the organization'],a:[0],e:'Enterprise-level Actions policies can restrict usage to specific subsets — such as verified creators or internal actions.'},
+  {d:'D3',q:'In GitHub Enterprise Server, what is the "Management Console" used for?',o:['Configuring underlying instance settings like SSL, networking, and license uploads','Editing the code in a repository','Managing user passwords','Buying more storage space'],a:[0],e:'The Management Console in GHES is a separate port used for system-level administration — configuring SSL certificates, networking, SMTP, and license uploads.'},
+  {d:'D4',q:'An enterprise wants to prevent individual orgs from disabling required PR reviews. What should they configure?',o:['Org-level branch protection','An enterprise policy','A CODEOWNERS file','A workflow requirement'],a:[1],e:'Enterprise policies override org-level settings. Setting the required PR review policy at enterprise level prevents individual orgs from weakening this requirement.'},
+  {d:'D1',q:'An admin needs to send logs to GitHub Support for a GHES outage. What should they generate?',o:['GraphQL report','A support bundle','An audit log export','A webhook payload'],a:[1],e:'A support bundle packages all relevant logs and diagnostics from a GHES instance in a format GitHub Support can analyze.'},
+  {d:'D6',q:'Your self-hosted runner is inside a private network and jobs are failing because github.com is blocked. What should you configure?',o:['IP allow list on GitHub','A proxy for the runner','A GitHub-hosted runner','A runner group'],a:[1],e:'Self-hosted runners in restricted networks must be configured with an HTTP proxy so they can reach GitHub.com to receive job assignments and download Actions.'},
+  {d:'D2',q:'Your company uses Okta. You want GitHub accounts auto-deprovisioned when employees leave. What should you configure?',o:['SAML SSO only','Team Synchronization','SCIM provisioning','2FA enforcement'],a:[2],e:'SCIM provisioning automates user lifecycle management — it provisions new accounts and deprovisions them when users are removed from Okta.'},
+  {d:'D3',q:'A Windows runner uses how many GitHub Actions minutes per actual minute of compute?',o:['1×','2×','5×','10×'],a:[1],e:'Windows runners are billed at 2× the rate of Linux runners. macOS runners are billed at 10×. Linux is the 1× baseline.'},
+  {d:'D7',q:'A team wants to publish their npm package so other internal teams can consume it. What should they use?',o:['GitHub Releases','GitHub Gists','GitHub Packages','A public npm registry'],a:[2],e:'GitHub Packages provides an internal npm registry that integrates with GitHub authentication — ideal for sharing private packages across internal teams.'},
+  {d:'D4',q:'A developer should be able to create PRs but NOT delete branches or manage settings. What is the correct role?',o:['Admin','Maintain','Write','Triage'],a:[2],e:'Write role allows creating PRs, merging, and pushing code. Maintain adds branch management. Admin adds settings/deletion. Write is the least-privilege choice.'},
+  {d:'D1',q:'For an automated deployment bot, what is BETTER than using a PAT tied to a user account?',o:['An OAuth App','A GitHub App','A deploy key','A webhook'],a:[1],e:'GitHub Apps authenticate as themselves with fine-grained, repo-scoped permissions and aren\'t tied to any user.'},
+  {d:'D5',q:'Which dashboard provides a high-level view of ALL security alerts across the entire Enterprise?',o:['Network Graph','Security Overview','The Pulse tab','Contribution Activity'],a:[1],e:'The Security Overview provides a consolidated view of security alerts from Dependabot, CodeQL, and Secret Scanning across all organizations.'},
+  {d:'D6',q:'A team wants to deploy to Production only after a senior manager clicks "Approve". What feature is needed?',o:['A "wait" command in the YAML file','Organization Webhooks','Environment Protection Rules (Required Reviewers)','Branch Protection Rules'],a:[2],e:'Environments can be configured to require manual approval from specific users or teams before a job can proceed.'},
+  {d:'D4',q:'In a GitHub organization, which permission level should be granted with the most caution?',o:['Member','Billing Manager','Owner','Outside Collaborator'],a:[2],e:'The Owner role has full administrative control over the organization — managing settings, billing, members, policies, and all repositories. Should be granted to as few people as possible.'},
+  {d:'D2',q:'When SCIM provisioning is enabled, what is the primary benefit regarding user accounts?',o:['Users can access GitHub resources without ever needing to sign in','It automatically enables 2FA for all users','It automates creation, updating, and deactivation of user accounts on GitHub based on IdP changes','It prevents the use of Personal Access Tokens entirely'],a:[2],e:'SCIM automates the entire user account lifecycle on GitHub based on IdP state — creating accounts for new employees, updating attributes, and deactivating accounts when employees leave.'},
+  {d:'D6',q:'An enterprise needs to use specialized hardware (GPUs) for specific CI/CD workloads. Which type of runner must the administrator configure?',o:['GitHub-hosted runners','macOS runners','Windows runners','Self-hosted runners'],a:[3],e:'Self-hosted runners are required when organizations need specific or specialized hardware such as GPUs.'},
+  {d:'D3',q:'Which statement accurately describes a key characteristic of GitHub AE?',o:['It allows the customer to install and manage the underlying OS','It supports full customization of the server hardware','It is typically deployed on the customer\'s on-premises infrastructure','It is a managed cloud offering designed for organizations with strict compliance and regulatory requirements'],a:[3],e:'GitHub AE is a managed cloud offering — GitHub manages the underlying infrastructure — but in a dedicated, isolated cloud environment designed for organizations with strict compliance requirements.'},
+  {d:'D5',q:'Which security feature helps developers/admins automatically identify vulnerable dependencies present in the repository\'s manifest files?',o:['Dependabot alerts','Code scanning','Secret scanning','Audit Log APIs'],a:[0],e:'Dependabot alerts analyze your manifest and lock files and cross-reference them with the GitHub Advisory Database to surface vulnerable dependencies.'},
+  {d:'D4',q:'How can an administrator grant a contractor access to a single repository without adding them to the entire Organization?',o:['Create a new Organization for every contractor','Add them to the "Owners" team','Invite them as an Outside Collaborator','Share the administrator\'s password'],a:[2],e:'Outside collaborators are users who are not members of the organization but are granted explicit access to specific repositories.'},
+  {d:'D3',q:'Your organization wants to reduce costs. Which of the following actions should you take?',o:['Grant all users admin permissions','Remove all outside collaborators','Regularly audit for inactive users','Disable SAML SSO for members'],a:[2],e:'Regularly auditing for inactive users reduces license costs since each user consumes a seat.'},
+  {d:'D6',q:'In GitHub Actions, what is the default behavior if multiple jobs are defined without the "needs" keyword?',o:['Jobs run sequentially in order of definition','Jobs run in parallel','Only the first job runs','Jobs require manual approval'],a:[1],e:'By default, jobs without "needs" dependencies run in parallel. The "needs" keyword creates sequential job dependencies.'},
+  {d:'D4',q:'Which setting ensures that even administrators must follow branch protection rules?',o:['Require pull request reviews','Dismiss stale reviews','Include administrators','Require signed commits'],a:[2],e:'Enabling "Include administrators" enforces all branch protection rules for administrators too — they can no longer bypass the rules.'},
+  {d:'D6',q:'Which keyword is used to prevent multiple workflow runs from executing simultaneously?',o:['strategy','concurrency','parallel','limit'],a:[1],e:'The "concurrency" keyword groups workflow runs by a key. When a new run starts in the same concurrency group, it can either cancel the in-progress run or wait.'},
+  {d:'D6',q:'What is the main advantage of environment secrets over repository secrets?',o:['They are automatically encrypted twice','They can require approval before deployment','They are globally accessible','They override organization secrets'],a:[1],e:'Environment secrets can be coupled with Environment Protection Rules — including required reviewers who must approve before the job can access the secrets.'},
+  {d:'D6',q:'Which event trigger triggers a workflow when code is pushed to any branch EXCEPT "main"?',o:['push: branches-ignore: [main]','push: branches: [!main]','push: except: main','pull_request: branches-ignore: [main]'],a:[0],e:'"branches-ignore" excludes specific branches from triggering the workflow.'},
+  {d:'D4',q:'Which permission level allows managing repository settings but NOT deleting the repository?',o:['Read','Write','Maintain','Admin'],a:[2],e:'Maintain allows managing issues, PRs, and some repository settings without full administrative control like repository deletion.'},
+  {d:'D4',q:'What is the effect of enabling "Require linear history" in branch protection?',o:['Forces squash merges only','Prevents merge commits','Enforces rebase merges','Prevents force pushes'],a:[1],e:'"Require linear history" prevents merge commits by requiring all merges to use either squash or rebase merge strategy.'},
+  {d:'D5',q:'Which token is automatically created for workflows and expires after the job completes?',o:['OAuth Token','GITHUB_TOKEN','Personal Access Token','Deploy Key'],a:[1],e:'GITHUB_TOKEN is automatically generated at the start of each workflow run and expires when the job completes.'},
+  {d:'D6',q:'What does "strategy.matrix" enable in a workflow?',o:['Sequential execution','Conditional branching','Multiple job variations','Secret encryption'],a:[2],e:'Matrix strategy allows running jobs with multiple configuration combinations (e.g., multiple OS versions, Node.js versions) in parallel.'},
+  {d:'D5',q:'What is the main risk of using a PAT instead of GITHUB_TOKEN?',o:['Short expiration','Lower permissions','Persistent credentials exposure','Workflow failure'],a:[2],e:'PATs are long-lived credentials that persist until manually revoked or expired. If leaked, they provide ongoing access. GITHUB_TOKEN expires after each job.'},
+  {d:'D6',q:'Which file location is required for GitHub Actions workflows?',o:['/workflows/','.github/workflows/','/.actions/','actions.yml'],a:[1],e:'Workflows must be stored in the .github/workflows/ directory of the repository.'},
+  {d:'D4',q:'What happens if a required status check fails on a branch protected PR?',o:['The PR auto-closes','Merge is blocked','Admin can always merge','Workflow restarts automatically'],a:[1],e:'Branch protection rules block the merge button if any required status checks have not passed.'},
+  {d:'D6',q:'What is required to enforce review from specific users before merging?',o:['CODEOWNERS file','Branch naming rule','Workflow approval','Signed commits'],a:[0],e:'The CODEOWNERS file designates specific users or teams as owners of certain files/directories. Combined with "Require review from Code Owners", their reviews are mandatory.'},
+  {d:'D6',q:'Which merge method combines all commits into one?',o:['Merge commit','Rebase','Squash merge','Fast-forward'],a:[2],e:'Squash merge combines all commits from a PR branch into a single commit on the base branch.'},
+  {d:'D6',q:'What does "runs-on" specify in a GitHub Actions job?',o:['Event trigger','Operating system or runner type','Secret scope','Branch filter'],a:[1],e:'"runs-on" defines the runner environment for the job — which OS or self-hosted runner label to use.'},
+  {d:'D5',q:'What is the purpose of a deploy key?',o:['Authenticate a single repository','Access all organization repos','Replace PAT','Encrypt secrets'],a:[0],e:'Deploy keys are SSH keys that grant access to a single specific repository. They provide read (or read/write) access to that one repo only.'},
+  {d:'D6',q:'What does "workflow_dispatch" enable?',o:['Scheduled execution','Manual trigger','Automatic PR merge','Secret rotation'],a:[1],e:'"workflow_dispatch" allows manual triggering of a workflow from the GitHub UI, via the REST API, or via the GitHub CLI.'},
+  {d:'D4',q:'What is the effect of "dismiss stale pull request approvals" in branch protection?',o:['Approvals remain valid after new commits','Approvals are reset when new commits are pushed','PR auto-merges when approved','Reviews become optional'],a:[1],e:'When enabled, any existing approvals are invalidated when new commits are pushed to the PR branch. Reviewers must re-approve after seeing the new changes.'},
+];
+
+// ========== PROGRESS STATE (in-memory, persists via window storage simulation) ==========
+// We use a self-contained in-memory store since localStorage is not available
+let PROGRESS = {
+  totalAttempted: 0,
+  totalCorrect: 0,
+  byDomain: {D1:{a:0,c:0},D2:{a:0,c:0},D3:{a:0,c:0},D4:{a:0,c:0},D5:{a:0,c:0},D6:{a:0,c:0},D7:{a:0,c:0}},
+  missedIds: [],   // indices into QS array
+  sessions: 0
+};
+
+// Try to load from storage
+(async()=>{
+  try{
+    const r=await window.storage.get('gh100_progress');
+    if(r&&r.value) PROGRESS=JSON.parse(r.value);
+  }catch(e){}
+})();
+
+async function saveProgress(){
+  try{ await window.storage.set('gh100_progress',JSON.stringify(PROGRESS)); }catch(e){}
+}
+
+function recordAnswer(qIdx, isCorrect, domain){
+  PROGRESS.totalAttempted++;
+  if(isCorrect) PROGRESS.totalCorrect++;
+  PROGRESS.byDomain[domain].a++;
+  if(isCorrect) PROGRESS.byDomain[domain].c++;
+  // Track missed by question index in QS array
+  const qi = QS.indexOf(qPool[qIdx]);
+  if(!isCorrect){
+    if(qi>=0&&!PROGRESS.missedIds.includes(qi)) PROGRESS.missedIds.push(qi);
+  } else {
+    // Remove from missed if answered correctly
+    const mi=PROGRESS.missedIds.indexOf(qi);
+    if(mi>=0) PROGRESS.missedIds.splice(mi,1);
+  }
+  saveProgress();
+}
+
+// ========== NAV ==========
+function showSec(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='progress') renderProgress();
+}
+function toggleD(id){document.getElementById(id).classList.toggle('open')}
+
+// ========== FLASHCARDS ==========
+let fcCards=[...FC],fcIdx=0;
+function initFC(){
+  const doms=['All','D1','D2','D3','D4','D5','D6','D7'];
+  const lbls={All:'All',D1:'Support',D2:'Auth',D3:'Deploy',D4:'Access',D5:'Security',D6:'Actions',D7:'Packages'};
+  const c=document.getElementById('fcFilter');c.innerHTML='';
+  doms.forEach(d=>{
+    const b=document.createElement('button');
+    b.className='fb'+(d==='All'?' active':'');
+    b.textContent=lbls[d];
+    b.onclick=()=>filterFC(d,b);
+    c.appendChild(b);
+  });
+  renderFC();
+}
+function filterFC(dom,btn){
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  fcCards=dom==='All'?[...FC]:FC.filter(c=>c.d===dom);
+  fcIdx=0;
+  document.getElementById('fcDomainLabel').textContent=dom==='All'?'All Domains':'Domain '+dom;
+  document.getElementById('cardScene').classList.remove('flipped');
+  renderFC();
+}
+function renderFC(){
+  if(!fcCards.length)return;
+  const c=fcCards[fcIdx];
+  document.getElementById('cardQ').textContent=c.q;
+  document.getElementById('cardA').textContent=c.a;
+  document.getElementById('cardTagF').textContent=c.d;
+  document.getElementById('cardTagB').textContent=c.d;
+  document.getElementById('fcCount').textContent=(fcIdx+1)+' / '+fcCards.length;
+  document.getElementById('fcTotal').textContent=fcCards.length+' cards';
+  document.getElementById('fcPrev').disabled=fcIdx===0;
+  document.getElementById('fcNext').disabled=fcIdx===fcCards.length-1;
+  document.getElementById('cardScene').classList.remove('flipped');
+}
+function flipCard(){document.getElementById('cardScene').classList.toggle('flipped')}
+function changeCard(d){fcIdx=Math.max(0,Math.min(fcCards.length-1,fcIdx+d));renderFC()}
+
+// ========== QUIZ ==========
+let qPool=[],qIdx=0,qScore=0,qAnswered=false,selOpts=new Set(),activeFilter='All',redoMode=false;
+
+function initQFilters(){
+  const doms=['All','D1','D2','D3','D4','D5','D6','D7'];
+  const lbls={All:'All',D1:'Support',D2:'Auth',D3:'Deploy',D4:'Access',D5:'Security',D6:'Actions',D7:'Packages'};
+  const row=document.getElementById('quizFilterRow');row.innerHTML='';
+  doms.forEach(d=>{
+    const b=document.createElement('button');
+    b.className='qfb'+(d==='All'?' active':'');
+    b.textContent=lbls[d];
+    b.onclick=()=>{redoMode=false;setQFilter(d,b)};
+    row.appendChild(b);
+  });
+}
+function setQFilter(dom,btn){
+  document.querySelectorAll('.qfb').forEach(b=>b.classList.remove('active','redo-mode'));
+  btn.classList.add('active');
+  activeFilter=dom;
+  startQuiz();
+}
+function buildPool(){
+  let src=activeFilter==='All'?QS:QS.filter(q=>q.d===activeFilter);
+  return [...src].sort(()=>Math.random()-.5);
+}
+function startQuiz(){
+  qPool=buildPool();
+  qIdx=0;qScore=0;qAnswered=false;selOpts=new Set();
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizContent').style.display='block';
+  const count=activeFilter==='All'?QS.length:QS.filter(q=>q.d===activeFilter).length;
+  document.getElementById('quizSub').textContent=redoMode?'Missed questions — redo mode':count+' exam-style questions';
+  renderQ();
+}
+function startRedo(){
+  if(!PROGRESS.missedIds.length)return;
+  redoMode=true;
+  qPool=PROGRESS.missedIds.map(i=>QS[i]).filter(Boolean).sort(()=>Math.random()-.5);
+  if(!qPool.length)return;
+  qIdx=0;qScore=0;qAnswered=false;selOpts=new Set();
+  document.querySelectorAll('.qfb').forEach(b=>b.classList.remove('active','redo-mode'));
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizContent').style.display='block';
+  document.getElementById('quizSub').textContent='Redo: '+qPool.length+' missed question'+(qPool.length===1?'':'s');
+  showSec('quiz',document.querySelector('.nb:nth-child(5)'));
+  // highlight the quiz nav button
+  document.querySelectorAll('.nb').forEach((b,i)=>{if(i===4)b.classList.add('active')});
+  renderQ();
+}
+function renderQ(){
+  const q=qPool[qIdx];
+  const pct=qPool.length?(qIdx/qPool.length)*100:0;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('qNum').textContent='Question '+(qIdx+1)+' of '+qPool.length+(redoMode?' 🔄':'');
+  document.getElementById('qScore').textContent='Score: '+qScore;
+  document.getElementById('qDomain').textContent='Domain '+q.d;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qExp').className='qexp';
+  document.getElementById('qNextBtn').className='qnext';
+  document.getElementById('qSubBtn').className='qsub';
+  qAnswered=false;selOpts=new Set();
+  const isM=q.a.length>1;
+  document.getElementById('multiHint').textContent=isM?'✦ Select '+q.a.length+' correct answers':'';
+  const opts=document.getElementById('qOpts');opts.innerHTML='';
+  const letters=['A','B','C','D','E','F'];
+  const indexed=q.o.map((o,i)=>({text:o,correct:q.a.includes(i)}));
+  indexed.sort(()=>Math.random()-.5);
+  indexed.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='qo';b.dataset.correct=opt.correct;b.dataset.idx=i;
+    b.innerHTML='<span class="ol">'+letters[i]+'.</span>'+opt.text;
+    b.onclick=isM?()=>toggleMO(b,i):()=>answerS(b,opt.correct);
+    opts.appendChild(b);
+  });
+  if(isM)document.getElementById('qSubBtn').className='qsub show';
+}
+function toggleMO(btn,idx){
+  if(qAnswered)return;
+  if(selOpts.has(idx)){selOpts.delete(idx);btn.style.borderColor='';btn.style.background='';btn.style.color='';}
+  else{selOpts.add(idx);btn.style.borderColor='var(--ac)';btn.style.background='rgba(88,166,255,.1)';btn.style.color='var(--ac)';}
+}
+function submitMulti(){
+  if(qAnswered)return;
+  const q=qPool[qIdx];
+  qAnswered=true;
+  const allBtns=document.querySelectorAll('.qo');
+  allBtns.forEach(b=>b.disabled=true);
+  const indexed=Array.from(allBtns).map((b,i)=>({btn:b,correct:b.dataset.correct==='true',selected:selOpts.has(i)}));
+  let allCorrect=true;
+  const cc=indexed.filter(o=>o.correct).length;
+  const sc=indexed.filter(o=>o.correct&&o.selected).length;
+  indexed.forEach(o=>{o.btn.style.borderColor='';o.btn.style.background='';o.btn.style.color='';if(o.correct)o.btn.classList.add('reveal');if(o.selected&&o.correct)o.btn.classList.add('correct');else if(o.selected&&!o.correct){o.btn.classList.add('wrong');allCorrect=false;}});
+  if(sc<cc)allCorrect=false;
+  const isC=allCorrect&&selOpts.size===cc;
+  if(isC)qScore++;
+  recordAnswer(qIdx,isC,q.d);
+  showExpNext(q);
+}
+function answerS(btn,isCorrect){
+  if(qAnswered)return;
+  qAnswered=true;
+  const q=qPool[qIdx];
+  const allBtns=document.querySelectorAll('.qo');
+  allBtns.forEach(b=>b.disabled=true);
+  if(isCorrect){btn.classList.add('correct');qScore++;}
+  else{btn.classList.add('wrong');allBtns.forEach(b=>{if(b.dataset.correct==='true')b.classList.add('reveal');});}
+  recordAnswer(qIdx,isCorrect,q.d);
+  showExpNext(q);
+}
+function showExpNext(q){
+  document.getElementById('qScore').textContent='Score: '+qScore;
+  const exp=document.getElementById('qExp');
+  if(q.e){exp.textContent='💡 '+q.e;exp.className='qexp show';}
+  document.getElementById('qSubBtn').className='qsub';
+  document.getElementById('qNextBtn').className='qnext show';
+}
+function nextQ(){
+  qIdx++;
+  if(qIdx>=qPool.length){showResult();return;}
+  renderQ();
+}
+function showResult(){
+  PROGRESS.sessions++;saveProgress();
+  document.getElementById('quizContent').style.display='none';
+  const pct=Math.round((qScore/qPool.length)*100);
+  let grade,color,msg;
+  if(pct>=80){grade='PASS';color='#3fb950';msg='Excellent! You\'re ready for the exam.';}
+  else if(pct>=65){grade='CLOSE';color='#ffa657';msg='Almost there! Review weak areas.';}
+  else{grade='RETRY';color='#f78166';msg='Keep studying. Check 📊 Progress for weak domains.';}
+  const res=document.getElementById('quizResult');
+  res.innerHTML=`<div class="qres">
+    <div class="rc" style="border-color:${color};color:${color};">${pct}%</div>
+    <div class="rlbl" style="color:${color};">${grade}</div>
+    <div class="rsub">${qScore} / ${qPool.length} correct — ${msg}</div>
+    <div class="rbk">
+      <div style="font-size:11px;font-family:'Space Mono',monospace;color:var(--tx2);margin-bottom:8px;letter-spacing:1px">RESULT</div>
+      <div class="rrow"><span>Total Questions</span><span style="font-weight:600">${qPool.length}</span></div>
+      <div class="rrow"><span>Correct Answers</span><span style="color:#3fb950;font-weight:600">${qScore}</span></div>
+      <div class="rrow"><span>Incorrect Answers</span><span style="color:#f78166;font-weight:600">${qPool.length-qScore}</span></div>
+      <div class="rrow"><span>Score</span><span style="color:${color};font-weight:600;font-family:'Space Mono',monospace">${pct}%</span></div>
+      <div class="rrow"><span>Missed (total tracked)</span><span style="color:var(--ac5);font-weight:600">${PROGRESS.missedIds.length}</span></div>
+      <div class="rrow"><span>Passing Score</span><span style="color:var(--tx2)">~70%</span></div>
+    </div>
+    <div class="rbtn-row">
+      <button class="rbtn" onclick="startQuiz()">🔄 Retry</button>
+      ${PROGRESS.missedIds.length?'<button class="rbtn danger" onclick="startRedo()">⚡ Redo Missed ('+PROGRESS.missedIds.length+')</button>':''}
+      <button class="rbtn" onclick="showSec(\'progress\',null)">📊 View Progress</button>
+    </div>
+  </div>`;
+  res.style.display='block';
+}
+
+// ========== PROGRESS DASHBOARD ==========
+const DCOLORS={D1:'#ffa657',D2:'#58a6ff',D3:'#8b949e',D4:'#d2a8ff',D5:'#f78166',D6:'#3fb950',D7:'#8b949e'};
+const DNAMES={D1:'D1: Support',D2:'D2: Auth',D3:'D3: Deploy',D4:'D4: Access',D5:'D5: Security',D6:'D6: Actions',D7:'D7: Packages'};
+
+function renderProgress(){
+  const overall=PROGRESS.totalAttempted>0?Math.round((PROGRESS.totalCorrect/PROGRESS.totalAttempted)*100):0;
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-num" style="color:var(--ac)">${PROGRESS.totalAttempted}</div><div class="stat-lbl">QUESTIONS ANSWERED</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:${overall>=70?'#3fb950':overall>=50?'#ffa657':'#f78166'}">${overall}%</div><div class="stat-lbl">OVERALL ACCURACY</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--ac2)">${PROGRESS.totalCorrect}</div><div class="stat-lbl">CORRECT ANSWERS</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--ac5)">${PROGRESS.missedIds.length}</div><div class="stat-lbl">QUESTIONS MISSED</div></div>
+  `;
+
+  // Domain bars
+  const barsEl=document.getElementById('domainBars');barsEl.innerHTML='';
+  const domains=['D1','D2','D3','D4','D5','D6','D7'];
+  // Sort by accuracy ascending so weakest shows first
+  const sorted=[...domains].sort((a,b)=>{
+    const pa=PROGRESS.byDomain[a].a>0?(PROGRESS.byDomain[a].c/PROGRESS.byDomain[a].a)*100:101;
+    const pb=PROGRESS.byDomain[b].a>0?(PROGRESS.byDomain[b].c/PROGRESS.byDomain[b].a)*100:101;
+    return pa-pb;
+  });
+  sorted.forEach(d=>{
+    const stats=PROGRESS.byDomain[d];
+    const pct=stats.a>0?Math.round((stats.c/stats.a)*100):null;
+    const barWidth=pct!==null?pct:0;
+    const barColor=pct===null?'#444':pct>=80?'#3fb950':pct>=60?'#ffa657':'#f78166';
+    const label=pct!==null?`${stats.c}/${stats.a} (${pct}%)`:'No data';
+    const weakTag=pct!==null&&pct<60?'<span style="font-size:10px;background:rgba(247,129,102,.15);color:#f78166;padding:2px 7px;border-radius:10px;margin-left:6px">WEAK</span>':'';
+    barsEl.innerHTML+=`<div class="dbar-row">
+      <div class="dbar-head">
+        <span class="dbar-name">${DNAMES[d]}${weakTag}</span>
+        <span class="dbar-stat">${label}</span>
+      </div>
+      <div class="dbar-bg"><div class="dbar-fill" style="width:${barWidth}%;background:${barColor}"></div></div>
+    </div>`;
+  });
+
+  // Missed questions
+  const missedEl=document.getElementById('missedList');missedEl.innerHTML='';
+  const rdoBtn=document.getElementById('redoBtn');
+  if(PROGRESS.missedIds.length===0){
+    missedEl.innerHTML='<div style="font-size:13px;color:var(--tx2);padding:4px 0">No missed questions — great work! 🎉</div>';
+    rdoBtn.disabled=true;
+  } else {
+    rdoBtn.disabled=false;
+    // Group missed by domain
+    const byDom={};
+    PROGRESS.missedIds.forEach(i=>{
+      const q=QS[i];if(!q)return;
+      if(!byDom[q.d])byDom[q.d]=0;
+      byDom[q.d]++;
+    });
+    Object.entries(byDom).sort((a,b)=>b[1]-a[1]).forEach(([d,cnt])=>{
+      missedEl.innerHTML+=`<div class="missed-tag" style="border:1px solid ${DCOLORS[d]};color:${DCOLORS[d]}">${DNAMES[d]}: ${cnt} missed</div>`;
+    });
+    rdoBtn.textContent=`Redo ${PROGRESS.missedIds.length} Missed Question${PROGRESS.missedIds.length===1?'':'s'}`;
+  }
+}
+
+function confirmReset(){
+  if(confirm('Reset all progress data? This cannot be undone.')){
+    PROGRESS={totalAttempted:0,totalCorrect:0,byDomain:{D1:{a:0,c:0},D2:{a:0,c:0},D3:{a:0,c:0},D4:{a:0,c:0},D5:{a:0,c:0},D6:{a:0,c:0},D7:{a:0,c:0}},missedIds:[],sessions:0};
+    saveProgress();
+    renderProgress();
+  }
+}
+
+// ========== INIT ==========
+initFC();
+initQFilters();
+startQuiz();
+</script>
+</body>
+</html>
